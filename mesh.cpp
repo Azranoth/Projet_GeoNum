@@ -58,13 +58,13 @@ void Mesh::importOFF(const char* filename){
     std::ifstream is;
     is.open(filename);
 
-    // Récupération de la taille du fichier
+    // Get file's length
     is.seekg(0, is.end);
     int length = is.tellg();
     is.seekg(0, is.beg);
 
     char* buffer = new char[length];
-    // Remplissage du buffer
+    // Fill buffer
     is.read(buffer, length);
     is.close();
 
@@ -78,7 +78,7 @@ void Mesh::importOFF(const char* filename){
         std::cerr << "Bad format " << str << std::endl;
         exit(1);
     }
-    // Ignorer les commenaires
+    // Ignore comments
     std::getline(stream, str);
     while (str[0] == '#') {
         std::getline(stream, str);
@@ -92,12 +92,12 @@ void Mesh::importOFF(const char* filename){
     ss >> nbEdges;
     std::cout << "Getting " << nbVertices << " vertices, " << nbFaces << " faces, " << nbEdges << " edges." << std::endl;
     double x, y, z;
-    // Get OFF file vertices
+    // Get OFF file's vertices
     for(int i = 0; i < nbVertices; i++){
         stream >> x; stream >> y; stream >> z;
         this->addVertex(new Vertex(x,y,z));
     }
-    // Get OFF file faces
+    // Get OFF file's faces
     int verticesPerFace;
     int idx;
     for(int i = 0; i < nbFaces; i++){
@@ -112,7 +112,9 @@ void Mesh::importOFF(const char* filename){
         stream >> idx;
         std::map<int, Vertex*>::iterator it;
         it = this->_vertices.find(idx);
-        //(*it).second->display();
+        if(it == this->_vertices.end()){
+            std::cerr << "Bad vertex index - closing the program" << std::endl;
+        }
         HalfEdge* firstHEdgeOfFace = new HalfEdge((*it).second);
 
         if((*it).second->getChildEdge() != NULL)
@@ -122,36 +124,41 @@ void Mesh::importOFF(const char* filename){
         newFace->setNbVertices(verticesPerFace);
         firstHEdgeOfFace->setFace(newFace);
 
-        //firstHEdgeOfFace->display();
-
         // Second half-edge of the face
         stream >> idx;
         it = this->_vertices.find(idx);
-        //(*it).second->display();
+        if(it == this->_vertices.end()){
+            std::cerr << "Bad vertex index - closing the program" << std::endl;
+        }
+
         HalfEdge* newHEdgeOfFace = new HalfEdge((*it).second);
         firstHEdgeOfFace->setNextHalfEdge(newHEdgeOfFace);
         this->addEdge(firstHEdgeOfFace);
         newHEdgeOfFace->setPrevHalfEdge(firstHEdgeOfFace);
+
         if((*it).second->getChildEdge() == NULL)
             (*it).second->setChildEdge(newHEdgeOfFace);
         newHEdgeOfFace->setFace(newFace);
-        //newHEdgeOfFace->display();
 
         // Each following half-edge of the face
         HalfEdge* prevHE = newHEdgeOfFace;
         for(int j = 2; j < verticesPerFace; j++){
+
             stream >> idx;
             it = this->_vertices.find(idx);
-            // it end()
+            if(it == this->_vertices.end()){
+                std::cerr << "Bad vertex index - closing the program" << std::endl;
+            }
+
             HalfEdge* newHE = new HalfEdge((*it).second);
             newHE->setFace(newFace);
             prevHE->setNextHalfEdge(newHE);
             this->addEdge(prevHE);
             newHE->setPrevHalfEdge(prevHE);
+
             prevHE = newHE;
             if((*it).second->getChildEdge() == NULL)
                 (*it).second->setChildEdge(newHE);
-            //newHE->display();
         }
         // Close the face
         prevHE->setNextHalfEdge(firstHEdgeOfFace);
@@ -168,7 +175,7 @@ void Mesh::importOFF(const char* filename){
     for(it = this->_edges.begin(); it != this->_edges.end(); it++){
 
         itHE = this->_edges.find(std::make_pair( (*it).second->getNextHalfEdge()->getSourceVertex()->getId(),
-                                                 (*it).second->getSourceVertex()->getId()));
+                                                 (*it).second->getSourceVertex()->getId()) );
         (*it).second->setTeteBeche( (*itHE).second );
         (*itHE).second->setTeteBeche( (*it).second );
     }

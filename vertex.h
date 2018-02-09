@@ -1,6 +1,8 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
+#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,6 +40,7 @@ public:
     // Other functions
     void display();
     double barycentricArea();
+    double voronoiArea();
 };
 
 #endif // VERTEX_H
