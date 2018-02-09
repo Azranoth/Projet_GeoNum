@@ -2,23 +2,23 @@
 
 Mesh::Mesh()
 {
-    this->_vertices = std::map<int, Vertex*>();
-    this->_faces = std::map<int, Face*>();
+    this->_vertices = std::map<int, Vertex*, classComp>();
+    this->_faces = std::map<int, Face*, classComp>();
 }
 
-Mesh::Mesh(std::map<int, Vertex*> vertices)
+Mesh::Mesh(std::map<int, Vertex *, classComp> vertices)
 {
     this->_vertices = vertices;
-    this->_faces = std::map<int, Face*>();
+    this->_faces = std::map<int, Face*, classComp>();
 }
 
-Mesh::Mesh(std::map<int, Face*> faces)
+Mesh::Mesh(std::map<int, Face*, classComp> faces)
 {
-    this->_vertices = std::map<int, Vertex*>();
+    this->_vertices = std::map<int, Vertex*, classComp>();
     this->_faces = faces;
 }
 
-Mesh::Mesh(std::map<int, Vertex*> vertices, std::map<int, Face*> faces)
+Mesh::Mesh(std::map<int, Vertex *, classComp> vertices, std::map<int, Face *, classComp> faces)
 {
     this->_vertices = vertices;
     this->_faces = faces;
