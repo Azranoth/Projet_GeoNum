@@ -28,10 +28,10 @@ public:
     Vertex(double x, double y, double z, HalfEdge* childEdge);
 
     // Getters
-    int getId(){ return _id; }
-    double x(){ return _x; }
-    double y(){ return _y; }
-    double z(){ return _z; }
+    int getId() const { return _id; }
+    double x() const { return _x; }
+    double y() const { return _y; }
+    double z() const { return _z; }
     HalfEdge* getChildEdge(){ return _childEdge; }
 
     // Setters
