@@ -39,7 +39,7 @@ void Vertex::display(){
 }
 
 double Vertex::barycentricArea(){
-    // Calcul de tous les barycentres des triangles ayant v pour sommet
+    // Process barycenter of every triangle having this point as a vertex
     std::vector<Vertex> listOfBarycentres;
     // Keeping first neighbour vertex in memory
     Vertex* firstNBVertex = this->_childEdge->getTeteBeche()->getSourceVertex();
@@ -117,16 +117,16 @@ double Vertex::voronoiArea(){
 
     do{
         // Angle = arccos( (vec1.vec2) / (|vec1|*|vec2|) )
-        // Note : here the Vertex class is used as a vector class, just to store coordinates.
+        // Note : here the Vertex class is used as a vector class, just to store coordinates, providing a fast access to them.
 
         //-------Next Vertex angle
-        Vertex* vec1 = new Vertex(nextNBVertex->x()-this->x(),
-                                  nextNBVertex->y()-this->y(),
-                                  nextNBVertex->z()-this->z());
+        Vertex* vec1 = new Vertex(this->x() - nextNBVertex->x(),
+                                  this->y() - nextNBVertex->y(),
+                                  this->z() - nextNBVertex->z());
 
-        Vertex* vec2 = new Vertex(nextNBVertex->x()-currentNBVertex->x(),
-                                  nextNBVertex->y()-currentNBVertex->y(),
-                                  nextNBVertex->z()-currentNBVertex->z());
+        Vertex* vec2 = new Vertex(currentNBVertex->x() - nextNBVertex->x(),
+                                  currentNBVertex->y() - nextNBVertex->y(),
+                                  currentNBVertex->z() - nextNBVertex->z());
 
         double dot = vec1->x()*vec2->x() + vec1->y()*vec2->y() + vec1->z()*vec2->z();
         double vec1Lenght = std::sqrt(vec1->x()*vec1->x() + vec1->y()*vec1->y() + vec1->z()*vec1->z());
@@ -134,10 +134,11 @@ double Vertex::voronoiArea(){
 
         double angleNextVertex = std::acos(dot/(vec1Lenght*vec2Lenght));
 
+
         //-------Prev Vertex angle
-        vec1 = new Vertex(  prevNBVertex->x()-this->x(),
-                            prevNBVertex->y()-this->y(),
-                            prevNBVertex->z()-this->z());
+        vec1 = new Vertex(  this->x() - prevNBVertex->x(),
+                            this->y() - prevNBVertex->y(),
+                            this->z() - prevNBVertex->z());
 
         vec2 = new Vertex(  currentNBVertex->x()-prevNBVertex->x(),
                             currentNBVertex->y()-prevNBVertex->y(),
@@ -154,7 +155,7 @@ double Vertex::voronoiArea(){
         double distBetweenThisAndCurrent = std::sqrt(   (currentNBVertex->x() - this->x())*(currentNBVertex->x() - this->x())
                                                       + (currentNBVertex->y() - this->y())*(currentNBVertex->y() - this->y())
                                                       + (currentNBVertex->z() - this->z())*(currentNBVertex->z() - this->z()));
-        voronoiAreaSum += (1/tan(angleNextVertex) + 1/tan(anglePrevVertex)) * std::abs(distBetweenThisAndCurrent)*std::abs(distBetweenThisAndCurrent);
+        voronoiAreaSum = voronoiAreaSum + ( 1/tan(angleNextVertex) + 1/tan(anglePrevVertex)) * std::abs(distBetweenThisAndCurrent)*std::abs(distBetweenThisAndCurrent);
 
         // Set pointers to next vertices
         prevNBVertex = currentNBVertex;
@@ -167,8 +168,8 @@ double Vertex::voronoiArea(){
         nextNBVertex = nextNBTeteBeche->getSourceVertex();
 
 
-    } while(currentNBVertex != firstNBVertex);
+    } while(currentNBVertex != firstNBVertex); // Continue until every neighboor vertex as been processed
 
-
-    return (1/8)*voronoiAreaSum;
+    std::cout << voronoiAreaSum << std::endl;
+    return (1./8.)*voronoiAreaSum;
 }

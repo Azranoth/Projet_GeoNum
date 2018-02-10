@@ -11,7 +11,10 @@ file ( GLOB HEADERS *.h *.hpp)
 
 file ( GLOB SOURCES *.cpp)
 
-add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
+#add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
+
+add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${HEADERS} ${SOURCES})
+
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -19,6 +22,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 #                    ${CMAKE_SOURCE_DIR}/kDTree_lib)
 #target_link_libraries(HalfEdge_structure
 #                      kDTree)
+
+target_link_libraries(${PROJECT_NAME}
+                        HalfEdge_structure
+                     )
 
 add_subdirectory(HalfEdge_structure)
 add_subdirectory(kDTree_lib)
