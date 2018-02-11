@@ -5,10 +5,10 @@
 int main(int argc, char *argv[]) {
 
     //------ LOAD/EXPORT OFF FILE
-    std::string filename = "../OFF/almost_torus.off";
+    std::string filename = "../../../OFF/almost_torus.off";
     Mesh mesh = Mesh();
     mesh.importOFF(filename.c_str());
-    mesh.exportOFF("../OFF/export_test.off");
+    mesh.exportOFF("../../../OFF/export_test.off");
     mesh.display();
     //---------------------------
 
@@ -60,4 +60,6 @@ int main(int argc, char *argv[]) {
 
     std::cout << v0->voronoiArea() << std::endl;
     //----------------------------------------
+
+    return 0;
 }
