@@ -10,6 +10,8 @@ add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/kDTree_lib)
+
 
 
 #add_subdirectory(Tests)
