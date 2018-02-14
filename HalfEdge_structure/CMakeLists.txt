@@ -8,10 +8,10 @@ file ( GLOB SOURCES *.cpp)
 
 add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(${PROJECT_NAME} PRIVATE
+                           ${CMAKE_CURRENT_SOURCE_DIR}
+                           ${CMAKE_SOURCE_DIR}/kDTree_lib)
 
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/kDTree_lib)
 
 
-
-#add_subdirectory(Tests)
+add_subdirectory(Tests)
