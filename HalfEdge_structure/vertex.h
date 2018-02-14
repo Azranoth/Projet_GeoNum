@@ -41,6 +41,9 @@ public:
     void display();
     double barycentricArea();
     double voronoiArea();
+
+    // Operators overload
+    bool operator==(Vertex& other);
 };
 
 #endif // VERTEX_H

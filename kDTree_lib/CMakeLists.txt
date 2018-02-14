@@ -8,11 +8,8 @@ file ( GLOB SOURCES *.cpp)
 
 add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/HalfEdge_structure)
-
-target_link_libraries(HalfEdge_structure)
-
+target_include_directories(${PROJECT_NAME} PRIVATE
+                           ${CMAKE_CURRENT_SOURCE_DIR}
+                           ${CMAKE_SOURCE_DIR}/HalfEdge_structure)
 
 add_subdirectory(Tests)

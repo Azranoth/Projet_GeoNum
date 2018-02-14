@@ -173,3 +173,10 @@ double Vertex::voronoiArea(){
     std::cout << voronoiAreaSum << std::endl;
     return (1./8.)*voronoiAreaSum;
 }
+
+// Operators overload
+
+bool Vertex::operator==(Vertex& other)
+{
+    return (this->x() == other.x()) && (this->y() == other.y()) && (this->z() == other.z());
+}
