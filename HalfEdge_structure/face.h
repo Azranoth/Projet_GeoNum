@@ -4,7 +4,6 @@
 #include "halfedge.h"
 
 class HalfEdge;
-class Face;
 
 class Face
 {

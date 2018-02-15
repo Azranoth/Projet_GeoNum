@@ -4,7 +4,7 @@ project(GeometrieNumerique LANGUAGES C CXX)
 if(MSVC)
   add_definitions("-D_USE_MATH_DEFINES")
 else()
-  add_compile_options(-std=c++14 -Wall -I ${CMAKE_CURRENT_SOURCE_DIR}/Eigen/)
+  add_compile_options(-std=c++14 -Wall -I ${CMAKE_CURRENT_SOURCE_DIR}/Eigen/ -I${CMAKE_CURRENT_SOURCE_DIR}/Boost)
 endif()
 
 file ( GLOB HEADERS *.h *.hpp)
@@ -29,9 +29,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 target_link_libraries(${PROJECT_NAME}
                         HalfEdge_structure
                         kDTree
+                        planesGraph
                      )
 
 add_subdirectory(HalfEdge_structure)
 add_subdirectory(kDTree_lib)
-#add_subdirectory(PlanesGraph_lib)
+add_subdirectory(PlanesGraph_lib)
 
