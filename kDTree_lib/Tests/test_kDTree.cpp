@@ -38,7 +38,6 @@ int main()
     tree->init(vertices);
     std::string kDTree_str = tree->toString(0);
     assert(kDTree_str == ctrl_string);
-//    std::cout << tree << std::endl;
     std::cout << "Test of tree initialization passed." << std::endl;
 
     // ---------------
@@ -56,8 +55,6 @@ int main()
     assert(vec_3NN[2] == v6);
 
     std::cout << "Test of tree findKNN method passed." << std::endl;
-
-
 
     return 0;
 }

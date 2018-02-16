@@ -76,7 +76,7 @@ public:
     kDTree(kDTree *father, Vertex* pt);
 
     /**
-     * @brief kDTree Constructor for non-leaf node
+     * @brief kDTree constructor for non-leaf node
      * @param father father node
      * @param firstChild
      * @param secondCHild
