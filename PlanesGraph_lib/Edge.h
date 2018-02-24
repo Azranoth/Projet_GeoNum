@@ -3,33 +3,37 @@
 #define EDGE_H
 
 #include "../HalfEdge_structure/vertex.h"
+#include "Node.h"
 
 class Node;
 
 
+/**
+ * @brief The Edge class represents an edge between 2 vertices
+ */
 class Edge {
 
 protected:
-    Vertex* _centerofSrcPlane;
-    Vertex* _centerOfDestPlane;
-    double _edgeWeight;
+    Node* _srcPlane;      // source plane of this edge
+    Node* _destPlane;     // target plane of this edge
+    double _edgeWeight;   // weight of this edge
 
 public:
     // Constructors
     Edge();
-    Edge(Vertex *src, Vertex *target, double weight);
-    Edge(Vertex *src, Vertex *target);
-    Edge(Vertex* target, double weight);
-    Edge(Vertex* target);
+    Edge(Node *src, Node *target, double weight);
+    Edge(Node *src, Node *target);
+    Edge(Node* target, double weight);
+    Edge(Node* target);
     Edge(double weight);
 
     // Getters
-    Vertex* getTargetVertex(){ return _centerOfDestPlane; }
-    Vertex* getSrcVertex()   { return _centerofSrcPlane; }
+    Node* getTargetPlane(){ return _destPlane; }
+    Node* getSrcPlane()   { return _srcPlane; }
     const double getWeight() { return _edgeWeight; }
 
     // Setters
-    void setTargetVertex(Vertex* v)  { _centerOfDestPlane = v; }
+    void setTargetPlane(Node* v)  { _destPlane = v; }
     void setEdgeWeight(double weight){ _edgeWeight = weight; }
 
     // Other functions

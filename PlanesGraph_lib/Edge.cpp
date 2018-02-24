@@ -2,41 +2,41 @@
 #include "Edge.h"
 
 Edge::Edge(){
-    this->_centerOfDestPlane = NULL;
-    this->_centerofSrcPlane = NULL;
+    this->_destPlane = NULL;
+    this->_srcPlane = NULL;
     this->_edgeWeight = -1.;
 }
 
-Edge::Edge(Vertex *src, Vertex *target, double weight){
-    this->_centerofSrcPlane = src;
-    this->_centerOfDestPlane = target;
+Edge::Edge(Node *src, Node *target, double weight){
+    this->_srcPlane = src;
+    this->_destPlane = target;
     this->_edgeWeight = weight;
 }
 
-Edge::Edge(Vertex *src, Vertex *target){
-    this->_centerofSrcPlane = src;
-    this->_centerOfDestPlane = target;
+Edge::Edge(Node *src, Node *target){
+    this->_srcPlane = src;
+    this->_destPlane = target;
     this->_edgeWeight = -1.;
 }
 
-Edge::Edge(Vertex* target, double weight){
-    this->_centerofSrcPlane = NULL;
-    this->_centerOfDestPlane = target;
+Edge::Edge(Node* target, double weight){
+    this->_srcPlane = NULL;
+    this->_destPlane = target;
     this->_edgeWeight = weight;
 }
 
-Edge::Edge(Vertex* target){
-    this->_centerofSrcPlane = NULL;
-    this->_centerOfDestPlane = target;
+Edge::Edge(Node* target){
+    this->_srcPlane = NULL;
+    this->_destPlane = target;
     this->_edgeWeight = -1.;
 }
 
 Edge::Edge(double weight){
-    this->_centerofSrcPlane = NULL;
-    this->_centerOfDestPlane = NULL;
-    this->_edgeWeight = -weight;
+    this->_srcPlane = NULL;
+    this->_destPlane = NULL;
+    this->_edgeWeight = weight;
 }
 
 void Edge::display(){
-    std::cout << "Edge " << this->_centerofSrcPlane->getId() << " <----> " << this->_centerOfDestPlane->getId() /*<< " of weight " << this->_edgeWeight*/ << std::endl;
+    std::cout << "Edge " << this->_srcPlane->getCenter()->getId() << " <----> " << this->_destPlane->getCenter()->getId() /*<< " of weight " << this->_edgeWeight*/ << std::endl;
 }

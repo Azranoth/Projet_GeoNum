@@ -13,15 +13,36 @@ PlanesGraph::PlanesGraph(std::map<int, Node*, classCompNodes> map){
 void PlanesGraph::display(){
     std::map<int, Node*, classCompNodes>::iterator itNodes;
     std::cout << "GRAPH : " << std::endl;
-    for(itNodes = this->_listOfNodes.begin(); itNodes != this->_listOfNodes.end(); itNodes++){
+    for(itNodes = this->_listOfNodes.begin(); itNodes != this->_listOfNodes.end(); ++itNodes){
         std::cout << "--";
         (*itNodes).second->display();
     }
 }
 
+void PlanesGraph::display2(){
+    (*this->_listOfNodes.begin()).second->display2();
+}
+
 void PlanesGraph::addNode(Node *n){
     this->_listOfNodes.insert(std::make_pair( n->getCenter()->getId(), n ));
 }
+
+Node* PlanesGraph::getMaxZPoint(){
+
+    Node* pointWithMaxZ = (*this->_listOfNodes.begin()).second;
+    std::map<int, Node*, classCompNodes>::iterator itNodes;
+    for(itNodes = this->_listOfNodes.begin(); itNodes != this->_listOfNodes.end(); ++itNodes){
+        std::cout << (*itNodes).second->getCenter()->z() << std::endl;
+        if((*itNodes).second->getCenter()->z() > pointWithMaxZ->getCenter()->z()){
+            std::cout << "new max Z " << (*itNodes).second->getCenter()->getId() << std::endl;
+            pointWithMaxZ = (*itNodes).second;
+        }
+    }
+    return pointWithMaxZ;
+}
+
+
+
 
 PlanesGraph* PlanesGraph::kruskal(){
 
@@ -51,7 +72,7 @@ PlanesGraph* PlanesGraph::kruskal(){
 
         for(itE = (*it).second->getEdges().begin(); itE != (*it).second->getEdges().end(); itE++){
 
-            edge_array[i] = E( (*itE).second->getSrcVertex()->getId(), (*itE).second->getTargetVertex()->getId() );
+            edge_array[i] = E( (*itE).second->getSrcPlane()->getCenter()->getId(), (*itE).second->getTargetPlane()->getCenter()->getId() );
             weights[i]  = (*itE).second->getWeight();
 
             i++;
@@ -69,12 +90,6 @@ PlanesGraph* PlanesGraph::kruskal(){
     kruskal_minimum_spanning_tree(g, std::back_inserter(spanning_tree));
 
 
-    std::cout << "Print the edges in the MST:" << std::endl;
-    for (std::vector < BEdge >::iterator ei = spanning_tree.begin(); ei != spanning_tree.end(); ei++) {
-        std::cout << source(*ei, g) << " <--> " << target(*ei, g)
-          << " with weight of " << weight[*ei] << std::endl;
-    }
-
     //Create a new graph object with every nodes but only containing MST's edges
     std::vector<BEdge>::iterator itBE;
     std::map<int, Node*, classCompNodes>::iterator n, n2;
@@ -84,29 +99,30 @@ PlanesGraph* PlanesGraph::kruskal(){
     Vertex *newCenterSrc, *newCenterTarget;
 
     for(itBE = spanning_tree.begin(); itBE != spanning_tree.end(); itBE++){
-        //std::cout << "prout!"<<std::endl;
+
         //----- Edge's source
         n = this->_listOfNodes.find( source(*itBE, g) );
 
         newNormalSrc = (*n).second->getNormal();
         newCenterSrc = (*n).second->getCenter();
-        //std::cout << newCenterSrc->getId() << " - " ;
+
         newSrc = new Node(newNormalSrc, newCenterSrc);
+
         //----- Edge's target
         n = this->_listOfNodes.find( target(*itBE, g) );
 
         newNormalTarget  = (*n).second->getNormal();
         newCenterTarget  = (*n).second->getCenter();
-        //std::cout << newCenterTarget->getId() << std::endl ;
+
         newTarget = new Node(newNormalTarget, newCenterTarget);
 
+        n  = newNodes.find( newSrc->getCenter()->getId() );
+        n2 = newNodes.find( newTarget->getCenter()->getId() );
 
-        n  = newNodes.find( newSrc->getCenter()->getId());
-        n2 = newNodes.find( newTarget->getCenter()->getId());
-
-        // If both source & target nodes are already in the map then add the edge directly
-        if( n != newNodes.end() && n2 != newNodes.end()){
+        // If both source & target nodes are already in the map then add the edges directly
+        if( n != newNodes.end() && n2 != newNodes.end() ){
             (*n).second->addEdge(newTarget, weight[*itBE]);
+            (*n2).second->addEdgePointingToThisPlane(newSrc, weight[*itBE]);
         }
         else{
 
@@ -117,12 +133,34 @@ PlanesGraph* PlanesGraph::kruskal(){
             if(n2 == newNodes.end()){
                 newNodes.insert( std::make_pair(newTarget->getCenter()->getId(), newTarget) );
             }
-            // Then add the edge
-            n  = newNodes.find( newSrc->getCenter()->getId());
+            // Then add the edges
+            n  = newNodes.find( newSrc->getCenter()->getId() );
             (*n).second->addEdge(newTarget, weight[*itBE]);
+            n2 = newNodes.find( newTarget->getCenter()->getId() );
+            (*n2).second->addEdgePointingToThisPlane(newSrc, weight[*itBE]);
+
         }
 
     }
 
-    return new PlanesGraph(newNodes);
+    // Planes orientation propagation
+    // ------ Assigning orientation to the initial plane with the largest Z coordinate
+    Node* maxZPlane = (*newNodes.begin()).second;
+    std::map<int, Node*, classCompNodes>::iterator itNodes;
+    for(itNodes = newNodes.begin(); itNodes != newNodes.end(); ++itNodes){
+
+        if((*itNodes).second->getCenter()->z() > maxZPlane->getCenter()->z() ){
+            maxZPlane = (*itNodes).second;
+        }
+    }
+
+    if( maxZPlane->getNormal()(2) < 0){
+        (*newNodes.find( maxZPlane->getCenter()->getId() )).second->setNormal( -maxZPlane->getNormal() );
+    }
+
+    // ------ Propagate the orientation recursively
+    newNodes[maxZPlane->getCenter()->getId()]->orientNormalsMap(newNodes, -1);
+
+    PlanesGraph *MSTree =  new PlanesGraph(newNodes);
+    return MSTree;
 }
