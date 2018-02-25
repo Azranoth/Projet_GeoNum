@@ -2,6 +2,7 @@
 #include "PlanesGraph.h"
 
 
+// ----- Constructors
 PlanesGraph::PlanesGraph(){
     this->_listOfNodes = std::map<int, Node*, classCompNodes>();
 }
@@ -10,6 +11,18 @@ PlanesGraph::PlanesGraph(std::map<int, Node*, classCompNodes> map){
     this->_listOfNodes = map;
 }
 
+PlanesGraph::PlanesGraph(std::vector<Plane*> planes){
+
+    this->_listOfNodes = std::map<int, Node*, classCompNodes>();
+    std::vector<Plane*>::iterator itP;
+
+    for(itP = planes.begin(); itP != planes.end(); ++itP){
+
+        this->_listOfNodes.insert(std::make_pair( (*itP)->center()->getId(), new Node((*itP)->normal(), (*itP)->center() ) ));
+    }
+}
+
+// ----- Methods
 void PlanesGraph::display(){
     std::map<int, Node*, classCompNodes>::iterator itNodes;
     std::cout << "GRAPH : " << std::endl;
@@ -19,32 +32,14 @@ void PlanesGraph::display(){
     }
 }
 
-void PlanesGraph::display2(){
-    (*this->_listOfNodes.begin()).second->display2();
-}
 
 void PlanesGraph::addNode(Node *n){
     this->_listOfNodes.insert(std::make_pair( n->getCenter()->getId(), n ));
 }
 
-Node* PlanesGraph::getMaxZPoint(){
-
-    Node* pointWithMaxZ = (*this->_listOfNodes.begin()).second;
-    std::map<int, Node*, classCompNodes>::iterator itNodes;
-    for(itNodes = this->_listOfNodes.begin(); itNodes != this->_listOfNodes.end(); ++itNodes){
-        std::cout << (*itNodes).second->getCenter()->z() << std::endl;
-        if((*itNodes).second->getCenter()->z() > pointWithMaxZ->getCenter()->z()){
-            std::cout << "new max Z " << (*itNodes).second->getCenter()->getId() << std::endl;
-            pointWithMaxZ = (*itNodes).second;
-        }
-    }
-    return pointWithMaxZ;
-}
 
 
-
-
-PlanesGraph* PlanesGraph::kruskal(){
+std::vector<Plane*> PlanesGraph::kruskal(){
 
     // Create temporary types specifically to use Boost's Kruskal algorithm
     typedef adjacency_list < vecS, vecS, undirectedS,no_property, property < edge_weight_t, int > > Graph;
@@ -148,7 +143,7 @@ PlanesGraph* PlanesGraph::kruskal(){
     Node* maxZPlane = (*newNodes.begin()).second;
     std::map<int, Node*, classCompNodes>::iterator itNodes;
     for(itNodes = newNodes.begin(); itNodes != newNodes.end(); ++itNodes){
-
+        ///(*itNodes).second->display();
         if((*itNodes).second->getCenter()->z() > maxZPlane->getCenter()->z() ){
             maxZPlane = (*itNodes).second;
         }
@@ -161,6 +156,10 @@ PlanesGraph* PlanesGraph::kruskal(){
     // ------ Propagate the orientation recursively
     newNodes[maxZPlane->getCenter()->getId()]->orientNormalsMap(newNodes, -1);
 
-    PlanesGraph *MSTree =  new PlanesGraph(newNodes);
-    return MSTree;
+    // Return the list of rightly oriented planes as a vector of Plane objects
+    std::vector<Plane*> newPlanes;
+    for(itNodes = newNodes.begin(); itNodes != newNodes.end(); ++itNodes){
+        newPlanes.push_back( (*itNodes).second->getPlane() );
+    }
+    return newPlanes;
 }

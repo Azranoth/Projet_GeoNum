@@ -31,11 +31,10 @@ struct classCompNodes
 class Node {
 
 protected:
-    Plane* _plane;                                               // plane center
+    Plane* _plane;                                              // plane center
     std::map<int, Edge*, classCompEdges> _listOfEdges;          // list of the edges with this node as source
     std::map<int, Edge*, classCompEdges> _edgesToThis;          // list of the edges with this node as a target (used in planes orientation process)
-    bool _alreadyOriented;
-    bool _ntmMap = false;
+    bool _alreadyOriented;                                      // boolean used in orientNormalsMap (determine if this node has already been processed or not)
 
 
 public:
@@ -50,18 +49,27 @@ public:
     // Getters
     Vector3d getNormal()                                    { return _plane->normal(); }
     Vertex* getCenter()                                     { return _plane->center(); }
-    std::map<int, Edge*, classCompEdges> getEdges()         { return _listOfEdges; }
-    std::map<int, Edge*, classCompEdges> getEdgesToThis()   { return _edgesToThis; }
+    Plane* getPlane()                                       { return _plane;           }
+    std::map<int, Edge*, classCompEdges> getEdges()         { return _listOfEdges;     }
+    std::map<int, Edge*, classCompEdges> getEdgesToThis()   { return _edgesToThis;     }
     bool isOriented()                                       { return _alreadyOriented; }
 
     // Setters
     void setNormal(Vector3d newNormal)                       { _plane->normal(newNormal); }
     void setCenter(Vertex* newCenter)                        { _plane->center(newCenter); }
-    void setEdges(std::map<int, Edge*, classCompEdges> list) { _listOfEdges = list; }
-    void setOriented()                                       { _alreadyOriented = true; }
+    void setEdges(std::map<int, Edge*, classCompEdges> list) { _listOfEdges = list;       }
+    void setOriented()                                       { _alreadyOriented = true;   }
 
-    // Other functions
+    // Other methods
+
+    /**
+     * @brief display   displays the node in text form on the standard output
+     */
     void display();
+
+    /**
+     * @brief display   displays the graph in text form on the standard output (recursive way)
+     */
     void display2();
 
     /**
@@ -77,15 +85,26 @@ public:
      */
     void addEdge(Node* n, double weight);
 
-
+    /**
+     * @brief addEdgePointingToThisPlane add an Edge object taking source in src Node and pointing this Node object
+     * @param src
+     */
     void addEdgePointingToThisPlane(Node* src);
 
+    /**
+     * @brief addEdgePointingToThisPlane add an Edge object of weight weight taking source in src Node and pointing this Node object
+     * @param src
+     * @param weight
+     */
     void addEdgePointingToThisPlane(Node* src, double weight);
 
-
-    //void orientNormals(Node* parentCalling);
-
+    /**
+     * @brief orientNormalsMap  Recursively process the nodes linked by edges to this node to re-orient normals of planes when it's required
+     * @param map
+     * @param parentCalling
+     */
     void orientNormalsMap(std::map<int, Node*, classCompNodes> map, int parentCalling);
+
 };
 
 #endif

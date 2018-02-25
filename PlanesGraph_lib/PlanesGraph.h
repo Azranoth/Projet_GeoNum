@@ -14,8 +14,6 @@ using namespace boost;
 class Node;
 
 
-
-
 /**
  * @brief The PlanesGraph class represents graphs of planes
  */
@@ -28,13 +26,22 @@ public:
     // Constructors
     PlanesGraph();
     PlanesGraph(std::map<int, Node*, classCompNodes> map);
+    PlanesGraph(std::vector<Plane*> planes);
 
     // Getters
+
+    /**
+     * @brief getNodes  returns the map of all the nodes in this graph
+     * @return
+     */
     std::map<int, Node*, classCompNodes> getNodes(){ return _listOfNodes; }
 
-    // Other functions
+    // Other methods
+
+    /**
+     * @brief display   displays the graph in text form on the standard output
+     */
     void display();
-    void display2();
 
     /**
      * @brief addNode adds a Node object n to the nodes list
@@ -43,13 +50,12 @@ public:
     void addNode(Node* n);
 
 
-    Node* getMaxZPoint();
-
     /**
-     * @brief kruskal generate the minimum spanning tree of this graph object using Boost library
-     * @return a new graph object
+     * @brief kruskal generate the minimum spanning tree of this graph object using Boost library, then automatically
+     * re-orient planes if required
+     * @return a vector of each planes in the mesh
      */
-    PlanesGraph* kruskal();
+    std::vector<Plane*> kruskal();
 };
 
 

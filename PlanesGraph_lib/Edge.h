@@ -28,15 +28,51 @@ public:
     Edge(double weight);
 
     // Getters
+
+    /**
+     * @brief getTargetPlane    returns the Node object pointed by this Edge
+     * @return
+     */
     Node* getTargetPlane(){ return _destPlane; }
+
+    /**
+     * @brief getSrcPlane       returns the Node object in which this Edge takes source
+     * @return
+     */
     Node* getSrcPlane()   { return _srcPlane; }
+
+    /**
+     * @brief getWeight     returns the weight of this Edge
+     * @return
+     */
     const double getWeight() { return _edgeWeight; }
 
     // Setters
-    void setTargetPlane(Node* v)  { _destPlane = v; }
+
+    /**
+     * @brief setTargetPlane    sets this Edge's target plane (i.e the Node object containing it)
+     * @param v
+     */
+    void setTargetPlane(Node* n)  { _destPlane = n; }
+
+    /**
+     * @brief setSourcePlane    sets this Edge's source plane (i.e the Node object containing it)
+     * @param n
+     */
+    void setSourcePlane(Node* n)  { _srcPlane  = n; }
+
+    /**
+     * @brief setEdgeWeight     sets this Edge's weight
+     * @param weight
+     */
     void setEdgeWeight(double weight){ _edgeWeight = weight; }
 
-    // Other functions
+
+    // Other methods
+
+    /**
+     * @brief display   displays the edge in text form on the standard output
+     */
     void display();
 
 };

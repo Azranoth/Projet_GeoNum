@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
     n0->addEdge(n4, 1.);
     n1->addEdge(n4, 1.);
 
-    n0->setNormal( Vector3d(1.,3.,5.));
+    n0->setNormal( Vector3d(-1.,-3.,-5.));
     n1->setNormal( Vector3d(-2.,7.,0.5));
     n2->setNormal( Vector3d(-3.,-0.33,-6.));
     n3->setNormal( Vector3d(0.,0.,1.));
@@ -50,9 +50,11 @@ int main(int argc, char *argv[]) {
     g.addNode(n3);
     g.addNode(n4);
 
-    PlanesGraph* g2 = g.kruskal();
+    std::vector<Plane*> listOfPlanes = g.kruskal();
 
-    g2->display();
+    for(std::vector<Plane*>::iterator itP = listOfPlanes.begin(); itP != listOfPlanes.end(); itP++){
+        std::cout << "Plane of center " << (*itP)->center()->getId() << " and of normal :" << std::endl << (*itP)->normal() << std::endl;
+    }
 
     return 0;
 }
