@@ -33,17 +33,17 @@ int main()
     // Test of computeCentroid with same weight for each vertex
     std::cout << "Begin test of computeCentroid with same weight for each vertex..." << std::endl;
     test_plane.computeCentroid(vertices_vector);
-    assert((test_plane.center()(0) >= 0.65) && (test_plane.center()(0) <= 0.67));
-    assert((test_plane.center()(1) >= 0.65) && (test_plane.center()(1) <= 0.67));
-    assert((test_plane.center()(2) >= 0.33) && (test_plane.center()(2) <= 0.34));
+    assert((test_plane.center()->x() >= 0.65) && (test_plane.center()->x() <= 0.67));
+    assert((test_plane.center()->y() >= 0.65) && (test_plane.center()->y() <= 0.67));
+    assert((test_plane.center()->z() >= 0.33) && (test_plane.center()->z() <= 0.34));
     std::cout << "Test of computeCentroid with same weight passed." << std::endl;
 
     // Test of computeCentroid with weight based on euclidiean distance
     std::cout << "Begin test of computeCentroid with wieght based on euclidean distance..." << std::endl;
     test_plane.computeCentroid(vertices_vector, weights);
-    assert((test_plane.center()(0) >= 0.49) && (test_plane.center()(0) <= 0.51));
-    assert((test_plane.center()(1) >= 0.49) && (test_plane.center()(1) <= 0.51));
-    assert((test_plane.center()(2) >= 0.0) && (test_plane.center()(2) <= 0.01));
+    assert((test_plane.center()->x() >= 0.49) && (test_plane.center()->x() <= 0.51));
+    assert((test_plane.center()->y() >= 0.49) && (test_plane.center()->y() <= 0.51));
+    assert((test_plane.center()->z() >= 0.0) && (test_plane.center()->z() <= 0.01));
     std::cout << "Test of computeCentroid with weights based on eucliden distance passed." << std::endl;
 
     // Test of computeNormal

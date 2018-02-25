@@ -36,6 +36,7 @@ public:
 
     // Setters
     void setChildEdge(HalfEdge* he);
+    void xyz(double x0, double y0, double z0);
 
     // Other functions
     void display();

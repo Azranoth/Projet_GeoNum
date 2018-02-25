@@ -11,8 +11,8 @@ class Plane
 {
 // Attributes
 private:
-    Eigen::VectorXd _center;
-    Eigen::VectorXd _normal;
+    Vertex* _center;
+    Eigen::Vector3d _normal;
     bool _centerIsDefined;
 
 // Constructors
@@ -21,7 +21,7 @@ public:
     Plane();
 
 
-    Plane(Eigen::VectorXd center, Eigen::VectorXd normal);
+    Plane(Vertex* center, Eigen::Vector3d normal);
 
 
 // Getters and setters
@@ -32,28 +32,28 @@ public:
      * @brief center return the center of the plane
      * @return
      */
-    Eigen::VectorXd center() const;
+    Vertex* center() const;
 
 
     /**
      * @brief center replace center with center0
      * @param center0
      */
-    void center(Eigen::VectorXd center0);
+    void center(Vertex* center0);
 
 
     /**
      * @brief normal return the normal of the plane
      * @return
      */
-    Eigen::VectorXd normal() const;
+    Eigen::Vector3d normal() const;
 
 
     /**
      * @brief normal replace the normal with normal0
      * @param normal0
      */
-    void normal(Eigen::VectorXd normal0);
+    void normal(Eigen::Vector3d normal0);
 
 
 // Methods

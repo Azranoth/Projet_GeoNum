@@ -29,6 +29,13 @@ Vertex::Vertex(double x, double y, double z, HalfEdge* childEdge){
     this->_childEdge = childEdge;
 }
 
+void Vertex::xyz(double x0, double y0, double z0)
+{
+    this->_x = x0;
+    this->_y = y0;
+    this->_z = z0;
+}
+
 void Vertex::setChildEdge(HalfEdge* he){
     this->_childEdge = he;
 }

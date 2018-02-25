@@ -4,49 +4,44 @@
 
 
 Node::Node(){
-    this->_planeCenter  = NULL;
-    this->_normalVector = Vector3d::Zero();
+    this->_plane = new Plane(nullptr, Vector3d(0,0,0));
     this->_listOfEdges  = std::map<int, Edge*, classCompEdges>();
     this->_edgesToThis  = std::map<int, Edge*, classCompEdges>();
     this->_alreadyOriented = false;
 }
 
 Node::Node(Vector3d normalVector, Vertex* center, std::map<int, Edge*, classCompEdges> map){
-    this->_planeCenter  = center;
-    this->_normalVector = normalVector;
+    this->_plane = new Plane(center, normalVector);
     this->_listOfEdges  = map;
     this->_edgesToThis  = std::map<int, Edge*, classCompEdges>();
     this->_alreadyOriented = false;
 }
 
 Node::Node(Vector3d normalVector, Vertex* center){
-    this->_planeCenter  = center;
-    this->_normalVector = normalVector;
+    this->_plane = new Plane(center, normalVector);
     this->_listOfEdges  = std::map<int, Edge*, classCompEdges>();
     this->_edgesToThis  = std::map<int, Edge*, classCompEdges>();
     this->_alreadyOriented = false;
 }
 
 Node::Node(Vector3d normalVector){
-    this->_planeCenter  = NULL;
-    this->_normalVector = normalVector;
+    this->_plane = new Plane(nullptr, normalVector);
     this->_listOfEdges  = std::map<int, Edge*, classCompEdges>();
     this->_edgesToThis  = std::map<int, Edge*, classCompEdges>();
     this->_alreadyOriented = false;
 }
 
 Node::Node(Vertex* center){
-    this->_planeCenter  = center;
-    this->_normalVector = Vector3d::Zero();
+    this->_plane = new Plane(center, Vector3d(0,0,0));
     this->_listOfEdges  = std::map<int, Edge*, classCompEdges>();
     this->_edgesToThis  = std::map<int, Edge*, classCompEdges>();
     this->_alreadyOriented = false;
 }
 
 void Node::display(){
-    std::cout << "Node of center " << this->_planeCenter->getId() << std::endl
-              << "----- of center (" << this->_planeCenter->x() << "," << this->_planeCenter->y() << "," << this->_planeCenter->z() << ") " << std::endl
-              << "----- of normal (" << this->_normalVector(0) << "," << this->_normalVector(1) << "," << this->_normalVector(2) << ") " << std::endl
+    std::cout << "Node of center " << this->_plane->center() << std::endl
+              << "----- of center (" << this->_plane->center()->x() << ", " << this->_plane->center()->y() << ", " << this->_plane->center()->z() << ")" << std::endl
+              << "----- of normal " << this->_plane->normal()<< std::endl
               << "----- Edges taking source in this point : " << std::endl;
     std::map<int, Edge*, classCompEdges>::iterator itE;
     for(itE = this->_listOfEdges.begin(); itE != this->_listOfEdges.end(); ++itE){
@@ -62,9 +57,9 @@ void Node::display(){
 
 void Node::display2(){
     if(_ntmMap == false){
-        std::cout << "Node of center " << this->_planeCenter->getId() << std::endl
-                  << "----- of center (" << this->_planeCenter->x() << "," << this->_planeCenter->y() << "," << this->_planeCenter->z() << ") " << std::endl
-                  << "----- of normal (" << this->_normalVector(0) << "," << this->_normalVector(1) << "," << this->_normalVector(2) << ") " << std::endl;
+        std::cout << "Node of center " << this->_plane->center() << std::endl
+                  << "----- of center (" << this->_plane->center()->x() << ", " << this->_plane->center()->y() << ", " << this->_plane->center()->z() << ")" << std::endl
+                  << "----- of normal " << this->_plane->normal()<< std::endl;
         std::map<int, Edge*, classCompEdges>::iterator itE;
         this->_ntmMap = true;
         for(itE = this->_listOfEdges.begin(); itE != this->_listOfEdges.end(); ++itE){
@@ -79,7 +74,6 @@ void Node::display2(){
         }
     }
     else{
-        std::cout << "prout" << std::endl;
         this->_ntmMap = true;
     }
 }
@@ -87,9 +81,9 @@ void Node::display2(){
 void Node::addEdge(Node *n){
     if(this->_listOfEdges.find(n->getCenter()->getId()) == this->_listOfEdges.end()){
         Edge* newE = new Edge(this, n);
-        double weight = 1 - (  this->_planeCenter->x() * n->getCenter()->x()
-                             + this->_planeCenter->y() * n->getCenter()->y()
-                             + this->_planeCenter->z() * n->getCenter()->z());
+        double weight = 1 - (  this->_plane->center()->x() * n->getCenter()->x()
+                             + this->_plane->center()->y() * n->getCenter()->y()
+                             + this->_plane->center()->z() * n->getCenter()->z());
         newE->setEdgeWeight(weight);
         this->_listOfEdges.insert(std::make_pair(n->getCenter()->getId(), newE));
     }
@@ -105,9 +99,9 @@ void Node::addEdge(Node *n, double weight){
 
 void Node::addEdgePointingToThisPlane(Node* src){
         Edge* newE = new Edge(src, this);
-        double weight = 1 - (  this->_planeCenter->x() * src->getCenter()->x()
-                             + this->_planeCenter->y() * src->getCenter()->y()
-                             + this->_planeCenter->z() * src->getCenter()->z());
+        double weight = 1 - (  this->_plane->center()->x() * src->getCenter()->x()
+                             + this->_plane->center()->y() * src->getCenter()->y()
+                             + this->_plane->center()->z() * src->getCenter()->z());
         newE->setEdgeWeight(weight);
         this->_edgesToThis.insert(std::make_pair(src->getCenter()->getId(), newE));
 }
@@ -171,7 +165,7 @@ void Node::orientNormalsMap(std::map<int, Node*, classCompNodes> map, int parent
     std::cout << "Orientation of plane " << this->getCenter()->getId() << std::endl;
 
     if(!this->_alreadyOriented || parentCalling == -1){
-        if(parentCalling == NULL)
+        if(parentCalling == -1)
             std::cout << "----- First call" << std::endl;
         std::cout << "----- Has not been oriented yet. " << this->_listOfEdges.size() << " edges taking source in this point --- " << this->_edgesToThis.size() << " edges pointing to this point" << std::endl;
         this->isOriented();
@@ -185,10 +179,10 @@ void Node::orientNormalsMap(std::map<int, Node*, classCompNodes> map, int parent
 
             // For each next plane that has not been oriented yet
             if( (*itETar).second->getTargetPlane()->getCenter()->getId() != parentCalling && !(*itETar).second->getTargetPlane()->isOriented() ){
-                std::cout << "---------- Dot result : " << this->_normalVector.dot( (*itETar).second->getTargetPlane()->getNormal()) << std::endl;
+                std::cout << "---------- Dot result : " << this->_plane->normal().dot( (*itETar).second->getTargetPlane()->getNormal()) << std::endl;
 
                 // Invert next plane's normal if the scalar product of its normal and this plane's normal is negative
-                if( this->_normalVector.dot( (*itETar).second->getTargetPlane()->getNormal() ) < 0 ) {
+                if( this->_plane->normal().dot( (*itETar).second->getTargetPlane()->getNormal() ) < 0 ) {
 
                     temp = (*map.find((*itETar).second->getTargetPlane()->getCenter()->getId())).second;
                     temp->setNormal(-(*itETar).second->getTargetPlane()->getNormal() );
@@ -205,10 +199,10 @@ void Node::orientNormalsMap(std::map<int, Node*, classCompNodes> map, int parent
 
             // For each next plane that has not been oriented yet
             if(  (*itESrc).second->getSrcPlane()->getCenter()->getId() != parentCalling &&!(*itESrc).second->getSrcPlane()->isOriented() ){
-                std::cout << "---------- Dot result : " <<  this->_normalVector.dot( (*itESrc).second->getSrcPlane()->getNormal()) << std::endl;
+                std::cout << "---------- Dot result : " <<  this->_plane->normal().dot( (*itESrc).second->getSrcPlane()->getNormal()) << std::endl;
 
                 // Invert next plane's normal if the scalar product of its normal and this plane's normal is negative
-                if( this->_normalVector.dot( (*itESrc).second->getSrcPlane()->getNormal() ) < 0 ) {
+                if( this->_plane->normal().dot( (*itESrc).second->getSrcPlane()->getNormal() ) < 0 ) {
 
                     temp = (*map.find((*itESrc).second->getSrcPlane()->getCenter()->getId())).second;
                     temp->setNormal(-(*itESrc).second->getSrcPlane()->getNormal() );

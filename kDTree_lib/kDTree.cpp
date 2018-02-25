@@ -325,19 +325,24 @@ void kDTree::recursiveSearch_kNearestNeighbors(const Vertex *refPoint, kDTree *n
 
 // Methods
 
+
 void kDTree::init(std::map<int, Vertex *, classComp> points)
 {
-    // lists of points on each side of the bissectrice
-    std::vector<Vertex*>firstPart;
-    std::vector<Vertex*>secondPart;
     // Points list
     std::vector<Vertex*> pointsList;
 
     //std::cout << "hey for_each" << std::endl;
     std::for_each(points.begin(), points.end(), [&pointsList](const std::map<int, Vertex *, classComp>::value_type& p) {pointsList.push_back(p.second);});
-    //std::cout << "hey for_each end" << std::endl;
 
-    //std::transform(points.begin(), points.end(), std::back_inserter(pointsList), [](std::map<int, Vertex *, classComp>::value_type t) -> Vertex* {return t.second;});
+    this->init(pointsList);
+}
+
+
+void kDTree::init(std::vector<Vertex*> pointsList)
+{
+    // lists of points on each side of the bissectrice
+    std::vector<Vertex*>firstPart;
+    std::vector<Vertex*>secondPart;
 
     // Sort the points on x coordinates
     //std::cout << "hey sort" << std::endl;

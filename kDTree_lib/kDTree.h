@@ -214,6 +214,13 @@ public:
      * @brief init Tree initialization
      * @param points
      */
+    void init(std::vector<Vertex*> pointsList);
+
+
+    /**
+     * @brief init Tree initialization
+     * @param points
+     */
     void init(std::map<int, Vertex*, classComp> points);
 
 

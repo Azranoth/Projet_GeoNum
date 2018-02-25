@@ -3,9 +3,10 @@
 
 
 #include <Eigen/Dense>
+#include <map>
 
 #include "Edge.h"
-#include <map>
+#include "../Plane_lib/Plane.h"
 
 class Edge;
 class Vertex;
@@ -30,8 +31,7 @@ struct classCompNodes
 class Node {
 
 protected:
-    Vector3d _normalVector;                                     // plane's vector
-    Vertex*  _planeCenter;                                      // plane's center
+    Plane* _plane;                                               // plane center
     std::map<int, Edge*, classCompEdges> _listOfEdges;          // list of the edges with this node as source
     std::map<int, Edge*, classCompEdges> _edgesToThis;          // list of the edges with this node as a target (used in planes orientation process)
     bool _alreadyOriented;
@@ -45,17 +45,18 @@ public:
     Node(Vector3d normalVector, Vertex* center);
     Node(Vector3d normalVector);
     Node(Vertex* center);
+    Node(Plane* plane0);
 
     // Getters
-    Vector3d getNormal()                                    { return _normalVector; }
-    Vertex* getCenter()                                     { return _planeCenter; }
+    Vector3d getNormal()                                    { return _plane->normal(); }
+    Vertex* getCenter()                                     { return _plane->center(); }
     std::map<int, Edge*, classCompEdges> getEdges()         { return _listOfEdges; }
     std::map<int, Edge*, classCompEdges> getEdgesToThis()   { return _edgesToThis; }
     bool isOriented()                                       { return _alreadyOriented; }
 
     // Setters
-    void setNormal(Vector3d newNormal)                       { _normalVector = newNormal; }
-    void setCenter(Vertex* newCenter)                        { _planeCenter = newCenter; }
+    void setNormal(Vector3d newNormal)                       { _plane->normal(newNormal); }
+    void setCenter(Vertex* newCenter)                        { _plane->center(newCenter); }
     void setEdges(std::map<int, Edge*, classCompEdges> list) { _listOfEdges = list; }
     void setOriented()                                       { _alreadyOriented = true; }
 

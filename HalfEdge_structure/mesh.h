@@ -8,9 +8,11 @@
 
 #include "vertex.h"
 #include "face.h"
+#include "kDTree.h"
 
 class Vertex;
 class Face;
+class kDTree;
 
 struct classComp
 {
@@ -26,6 +28,10 @@ struct classComp2
 
 class Mesh
 {
+// Used for internal computation
+private:
+    kDTree* kd_tree;
+
 protected:
     std::map<int, Vertex*, classComp> _vertices;
     std::map<int, Face*, classComp> _faces;
@@ -48,7 +54,9 @@ public:
     void display();
     void verticesDisplay();
     void importOFF(const char* filename);
+    void importOFF(const std::string fileName);
     void exportOFF(const char* filename);
+    void exportOFF(const std::string fileName);
 
 };
 

@@ -5,12 +5,12 @@
 Plane::Plane()
 {
     this->_centerIsDefined = false;
-    this->_center = Eigen::VectorXd(3);
-    this->_normal = Eigen::VectorXd(3);
+    this->_center = nullptr;
+    this->_normal = Eigen::Vector3d(3);
 }
 
 
-Plane::Plane(Eigen::VectorXd center, Eigen::VectorXd normal)
+Plane::Plane(Vertex *center, Eigen::Vector3d normal)
 {
     this->_center = center;
     this->_normal = normal;
@@ -20,26 +20,27 @@ Plane::Plane(Eigen::VectorXd center, Eigen::VectorXd normal)
 
 // Getters and setters
 
-Eigen::VectorXd Plane::center() const
+
+Vertex* Plane::center() const
 {
     return this->_center;
 }
 
 
-void Plane::center(Eigen::VectorXd center0)
+void Plane::center(Vertex* center0)
 {
     this->_center = center0;
     this->_centerIsDefined = true;
 }
 
 
-Eigen::VectorXd Plane::normal() const
+Eigen::Vector3d Plane::normal() const
 {
     return this->_normal;
 }
 
 
-void Plane::normal(Eigen::VectorXd normal0)
+void Plane::normal(Eigen::Vector3d normal0)
 {
     this->_normal = normal0;
 }
@@ -50,6 +51,8 @@ void Plane::normal(Eigen::VectorXd normal0)
 
 void Plane::computeCentroid(std::vector<Vertex *> vertices, Eigen::VectorXd weights)
 {
+
+    Eigen::VectorXd center0;
 
     if(weights.size() != static_cast<unsigned int>(vertices.size()))
     {
@@ -66,13 +69,15 @@ void Plane::computeCentroid(std::vector<Vertex *> vertices, Eigen::VectorXd weig
          verticesMatrix(i, 2) = vertices[i]->z();
      }
 
-     this->_center = verticesMatrix.jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(weights);
+     center0 = verticesMatrix.jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(weights);
+     this->_center = new Vertex(center0(0), center0(1), center0(2));
      this->_centerIsDefined = true;
 }
 
 
 void Plane::computeCentroid(std::vector<Vertex *> vertices)
 {
+    Eigen::VectorXd center0;
     Eigen::MatrixXd verticesMatrix(vertices.size(), 3);
     Eigen::VectorXd weights(vertices.size());
 
@@ -87,8 +92,12 @@ void Plane::computeCentroid(std::vector<Vertex *> vertices)
         verticesMatrix(i, 2) = vertices[i]->z();
     }
 
-    //this->_center = verticesMatrix.jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(weights);
-    this->_center = (verticesMatrix.transpose() * verticesMatrix).jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(verticesMatrix.transpose() * weights);
+    std::cout << "enculé" << std::endl;
+    center0 = (verticesMatrix.transpose() * verticesMatrix).jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(verticesMatrix.transpose() * weights);
+    std::cout << "enculé end" << std::endl;
+
+    std::cout << "hey " << std::endl;
+    this->_center = new Vertex(center0(0), center0(1), center0(2));
     this->_centerIsDefined = true;
 }
 
@@ -116,9 +125,9 @@ void Plane::computeNormal(std::vector<Vertex *> vertices)
     // Covariance matrix initialization
     for(unsigned int i = 0; i<vertices.size(); i++)
     {
-        x = vertices[i]->x() - this->_center(0);
-        y = vertices[i]->y() - this->_center(1);
-        z = vertices[i]->z() - this->_center(2);
+        x = vertices[i]->x() - this->_center->x();
+        y = vertices[i]->y() - this->_center->y();
+        z = vertices[i]->z() - this->_center->z();
 
         temp(0,0) = x*x;
         temp(1,1) = y*y;

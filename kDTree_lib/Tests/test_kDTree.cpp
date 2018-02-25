@@ -20,6 +20,7 @@ int main()
     Vertex* v6 = new Vertex(-25.2, -2.0, 17.8);
     Vertex* v7 = new Vertex(7.5, 15.2, 8.0);
     Vertex* v8 = new Vertex(12.5, 45.2, -15.5);
+    Vertex* vTest = new Vertex(10.0, 35.5, -10.0);
 
     vertices[v1->getId()] = v1;
     vertices[v2->getId()] = v2;
@@ -53,6 +54,10 @@ int main()
     assert(vec_3NN[0] == v2);
     assert(vec_3NN[1] == v3);
     assert(vec_3NN[2] == v6);
+
+    vec_1NN = tree->findKNN(vTest, 1);
+
+    assert(vec_1NN[0] == v5);
 
     std::cout << "Test of tree findKNN method passed." << std::endl;
 
