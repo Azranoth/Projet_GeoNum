@@ -58,29 +58,6 @@ void Node::display(){
     }
 }
 
-void Node::display2(){
-    if(_ntmMap == false){
-        std::cout << "Node of center " << this->_plane->center()->getId() << std::endl
-                  << "----- of center (" << this->_plane->center()->x() << ", " << this->_plane->center()->y() << ", " << this->_plane->center()->z() << ")" << std::endl
-                  << "----- of normal " << this->_plane->normal()<< std::endl;
-        std::map<int, Edge*, classCompEdges>::iterator itE;
-        this->_ntmMap = true;
-        for(itE = this->_listOfEdges.begin(); itE != this->_listOfEdges.end(); ++itE){
-            std::cout << "---------- ";
-            (*itE).second->display();
-            (*itE).second->getTargetPlane()->display2();
-        }
-        for(itE = this->_edgesToThis.begin(); itE != this->_edgesToThis.end(); ++itE){
-            std::cout << "---------- ";
-            (*itE).second->display();
-            (*itE).second->getSrcPlane()->display2();
-        }
-    }
-    else{
-        this->_ntmMap = true;
-    }
-}
-
 void Node::addEdge(Node *n){
     if(this->_listOfEdges.find(n->getCenter()->getId()) == this->_listOfEdges.end()){
         Edge* newE = new Edge(this, n);

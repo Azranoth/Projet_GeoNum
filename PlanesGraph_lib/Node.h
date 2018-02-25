@@ -68,11 +68,6 @@ public:
     void display();
 
     /**
-     * @brief display   displays the graph in text form on the standard output (recursive way)
-     */
-    void display2();
-
-    /**
      * @brief addEdge add an Edge object pointing to the Node n to the list of this object
      * @param n
      */
