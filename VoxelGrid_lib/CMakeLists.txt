@@ -15,4 +15,4 @@ target_include_directories(${PROJECT_NAME} PRIVATE
                            ${CMAKE_SOURCE_DIR}/PlanesGraph_lib
                            ${CMAKE_SOURCE_DIR}/Plane_lib)
 
-#add_subdirectory(Tests)
+add_subdirectory(Tests)

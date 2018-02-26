@@ -82,5 +82,11 @@ public:
     void computeNormal(std::vector<Vertex *> vertices);
 };
 
+struct PlaneComp
+{
+    bool operator() (const Plane* p1, const Plane* p2) const
+    { return p1->center()->getId()<p2->center()->getId(); }
+};
+
 
 #endif

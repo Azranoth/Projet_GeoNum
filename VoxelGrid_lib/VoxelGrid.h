@@ -2,8 +2,12 @@
 #define __VOXELGRID_H
 
 #include <../Eigen/Eigen/Dense>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
 
 #include "mesh.h"
+#include "kDTree.h"
 #include "PlanesGraph.h"
 
 struct cellPoint
@@ -27,7 +31,7 @@ struct gridCell
     cellPoint* points[8];
     gridCell* nextCell;
 
-    gridCell();
+    gridCell() {}
 };
 
 typedef std::array<double, 3> cellKey;
@@ -57,12 +61,23 @@ private:
 
 
     /**
+     * @brief setPointValues compute data needed for point construction. Store new coordinates in pointers x, y and z
+     * @param x
+     * @param y
+     * @param z
+     * @param planes_map std::map container with planes. Used to speed up the nearest plane search
+     * @return
+     */
+    Plane* getnearestPlane(double x, double y, double z, Vertex *planeCenter, std::map<int, Plane *, classComp> &planes_map, kDTree &planesTree);
+
+
+    /**
      * @brief euclideanDistance compute euclidean distance between two points
      * @param p1
      * @param p2
      * @return
      */
-    double euclideanDistance(Eigen::Vector3d p1, Eigen::Vector3d p2);
+    double Hausdorff(Eigen::Vector3d p1, Eigen::Vector3d nearestPlaneCenter, Eigen::Vector3d planeNormal, kDTree& planesTree);
 
 
     /**
@@ -70,7 +85,7 @@ private:
      * @param val
      * @return
      */
-    bool computeCellPointValue(Plane* nearestPlane, Eigen::Vector3d point, double* val);
+    bool computeCellPointValue(kDTree& planesTree, std::map<int, Plane*, classComp>& planes_map, Eigen::Vector3d point, double* val);
 
     /**
      * @brief newCell create the cell with the given P0 point
@@ -79,14 +94,24 @@ private:
      * @param z0
      * @return
      */
-    gridCell* newCell(Plane *nearestPlane, double x0, double y0, double z0);
+    gridCell* newCell(kDTree& planesTree, std::map<int, Plane*, classComp>& planes_map, double x0, double y0, double z0);
 
 // Methods
 public:
 
     gridCell* getFirstCell();
+
+
+    std::string toString();
 };
 
+template<typename T>
+std::ostream& operator<<(std::ostream& os, VoxelGrid& obj)
+{
+    os << obj.toString();
+
+    return os;
+}
 
 
 #endif
