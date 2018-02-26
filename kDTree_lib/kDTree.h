@@ -10,23 +10,33 @@ struct classComp;
 
 enum enum_separationAxis {separationIsOnX, separationIsOnY, separationIsOnZ, none};
 
+/**
+ * @brief The classCompOnX struct is used to sort vertices in x axis
+ */
 struct classCompOnX
 {
     bool operator() (Vertex* v1, Vertex* v2) const
     { return v1->x()<v2->x(); }
 };
 
+/**
+ * @brief The classCompOnY struct is used to sort vertices in y axis
+ */
 struct classCompOnY
 {
     bool operator() (Vertex* v1, Vertex* v2) const
     { return v1->y()<v2->y(); }
 };
 
+/**
+ * @brief The classCompOnZ struct is used to sort vertices in z axis
+ */
 struct classCompOnZ
 {
     bool operator() (Vertex* v1, Vertex* v2) const
     { return v1->z()<v2->z(); }
 };
+
 
 struct Point
 {
@@ -36,11 +46,13 @@ struct Point
     Point() {}
 };
 
+
 struct pointComparisonClass
 {
     bool operator() (const Point& p1, const Point& p2) const
     { return p1.distanceFromRefPoint <= p2.distanceFromRefPoint; }
 };
+
 
 /**
  * @brief The kDTree class represents the kDTree object with k = 2

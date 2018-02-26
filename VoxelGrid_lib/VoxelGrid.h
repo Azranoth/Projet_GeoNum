@@ -10,6 +10,9 @@
 #include "kDTree.h"
 #include "PlanesGraph.h"
 
+/**
+ * @brief The cellPoint struct is the representation of the grid's cell. Each cell has a position and the value of the signed distance
+ */
 struct cellPoint
 {
     Eigen::Vector3d position;
@@ -26,6 +29,9 @@ public:
 };
 
 
+/**
+ * @brief The gridCell struct is the representation of a cube used by the marching cubes algorithm
+ */
 struct gridCell
 {
     cellPoint* points[8];
@@ -52,8 +58,13 @@ public:
 
     VoxelGrid();
 
-    // Create a kd-tree with with planes centroid for nearest plane search
-    // pour chaque point P0 chercher le plan le plus proche via le kd-tree
+    /**
+     * @brief VoxelGrid create the voxels grid
+     * @param planes
+     * @param cubeSize
+     * @param density
+     * @param noise
+     */
     VoxelGrid(std::vector<Plane *> planes, double cubeSize, double density, double noise);
 
 // Auxiliary methods
@@ -72,23 +83,30 @@ private:
 
 
     /**
-     * @brief euclideanDistance compute euclidean distance between two points
+     * @brief Hausdorff compute Hausdorff distance between the projection of the point p1 in the nearest plane with the nearest planes center
      * @param p1
-     * @param p2
+     * @param nearestPlaneCenter centroid of the nearest plane
+     * @param planeNormal
+     * @param planesTree
      * @return
      */
     double Hausdorff(Eigen::Vector3d p1, Eigen::Vector3d nearestPlaneCenter, Eigen::Vector3d planeNormal, kDTree& planesTree);
 
 
     /**
-     * @brief computeCellPointValue compute the signed distance with the nearest plane centroid and store the result in the pointer val. Return false if the value is undefined (i.e : if the signed distance is greater than P + delta
+     * @brief computeCellPointValue compute the signed distance with the nearest plane centroid and store the result in the pointer val. Return false if the value is undefined (i.e : if the Hausdorff distance is greater than P + delta
+     * @param planesTree kDTree for planes center
+     * @param planes_map
+     * @param point
      * @param val
      * @return
      */
     bool computeCellPointValue(kDTree& planesTree, std::map<int, Plane*, classComp>& planes_map, Eigen::Vector3d point, double* val);
 
     /**
-     * @brief newCell create the cell with the given P0 point
+     * @brief newCell create the 8 points of the cell with the given P0. Each point is stored in a map to reduce the memory complexity
+     * @param planesTree
+     * @param planes_map
      * @param x0
      * @param y0
      * @param z0
@@ -99,14 +117,21 @@ private:
 // Methods
 public:
 
+    /**
+     * @brief getFirstCell return the first cell of the grid
+     * @return
+     */
     gridCell* getFirstCell();
 
 
+    /**
+     * @brief toString Return the string version of the grid
+     * @return
+     */
     std::string toString();
 };
 
-template<typename T>
-std::ostream& operator<<(std::ostream& os, VoxelGrid& obj)
+inline std::ostream& operator<<(std::ostream& os, VoxelGrid& obj)
 {
     os << obj.toString();
 

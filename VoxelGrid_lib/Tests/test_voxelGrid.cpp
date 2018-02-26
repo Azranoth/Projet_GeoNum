@@ -55,7 +55,7 @@ int main()
     // Test of grid construction
     std::cout << "Begin test of grid construction..." << std::endl;
     VoxelGrid vg_test = VoxelGrid(planes, cubeSize, density, noise);
-    std::cout << vg_test.toString() << std::endl;
+    std::cout << vg_test << std::endl;
     std::cout << "Test of grid construction passed." << std::endl;
 
     return 0;

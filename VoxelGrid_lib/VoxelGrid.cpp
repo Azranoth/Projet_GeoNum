@@ -72,14 +72,14 @@ VoxelGrid::VoxelGrid(std::vector<Plane*> planes, double cubeSize, double density
     currentCellY = maxY+this->maxDistanceValue-0.1;
     currentCellZ = minZ-this->maxDistanceValue+0.1;
 
-    std::cout << "maxX : " << maxX << ", minX : " << minX << ", maxY : " << maxY << ", minY : " << minY << ", maxZ : " << maxZ << " and minZ : " << minZ << std::endl;
-    std::cout << "cellX : " << currentCellX << ", cellY : " << currentCellY << " and cellZ : " << currentCellZ << std::endl;
-    std::cout << "cubeSize : " << this->cubeSize << ", " << this->maxDistanceValue << std::endl;
+//    std::cout << "maxX : " << maxX << ", minX : " << minX << ", maxY : " << maxY << ", minY : " << minY << ", maxZ : " << maxZ << " and minZ : " << minZ << std::endl;
+//    std::cout << "cellX : " << currentCellX << ", cellY : " << currentCellY << " and cellZ : " << currentCellZ << std::endl;
+//    std::cout << "cubeSize : " << this->cubeSize << ", " << this->maxDistanceValue << std::endl;
 
     isFirstCellOfPlane = true;
     isFirstCellOfRow = true;
 
-    // Find first cell of the grid
+    // Build the grid
 
     // Z variation
     while( (currentCellZ<maxZ) || ( (currentCellZ>=maxZ) && (currentCell != nullptr) ) )
@@ -90,10 +90,12 @@ VoxelGrid::VoxelGrid(std::vector<Plane*> planes, double cubeSize, double density
             // X variation
             while( (currentCellX<maxX) || ( (currentCellZ>=maxX) && (currentCell != nullptr) ) )
             {
-                //std::cout << "cellX : " << currentCellX << ", cellY : " << currentCellY << " and cellZ : " << currentCellZ << " et currentCell : " << currentCell << std::endl;
+
+                // Create the cell
                 currentCell = newCell(planesTree, planes_map, currentCellX, currentCellY, currentCellZ);
                 i++;
 
+                // Keep the first cell of the row to create the next row
                 if(isFirstCellOfRow)
                 {
                     isFirstCellOfRow = false;
@@ -102,6 +104,7 @@ VoxelGrid::VoxelGrid(std::vector<Plane*> planes, double cubeSize, double density
                     firstCellOfRow(2) = currentCellZ;
                 }
 
+                // Keep the first cell of the plane to create the next one
                 if(isFirstCellOfPlane)
                 {
                     isFirstCellOfPlane = false;
@@ -217,7 +220,7 @@ bool VoxelGrid::computeCellPointValue(kDTree& planesTree, std::map<int, Plane*, 
     Vertex* planeCenter = nearestPlane->center();
     Eigen::Vector3d pointProjectedOnPlane = point - Eigen::Vector3d(planeCenter->x(), planeCenter->y(), planeCenter->z());
     
-    // Verify if value's validity
+    // Verify value's validity
     if(Hausdorff(point, Eigen::Vector3d(planeCenter->x(), planeCenter->y(), planeCenter->z()), nearestPlane->normal(), planesTree) < this->maxDistanceValue)
     {
         *val = pointProjectedOnPlane.dot(nearestPlane->normal());

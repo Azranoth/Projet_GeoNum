@@ -130,13 +130,10 @@ kDTree* kDTree::recursiveInitialization(std::vector<Vertex *> pointsList, enum e
     kDTree* answ;
     Vertex* bissectricePoint;
 
-    //std::cout << "pointsList.size = " << pointsList.size() << std::endl;
     // End of the recursion
     if(pointsList.size() == 1)
     {
-        //std::cout << "hey poitsList.size == 1" << std::endl;
         answ = new kDTree(nullptr, *pointsList.begin());
-        //std::cout << "hey poitsList.size == 1 end" << std::endl;
         return answ;
     }
 
@@ -145,23 +142,17 @@ kDTree* kDTree::recursiveInitialization(std::vector<Vertex *> pointsList, enum e
         // X separation
         case separationIsOnX :
             // Sort the points on x coordinates
-            //std::cout << "hey sort on x" << std::endl;
             std::sort(pointsList.begin(), pointsList.end(), classCompOnY());
-            //std::cout << "hey sort on x end" << std::endl;
             break;
         // Y separation
         case separationIsOnY :
             // Sort the points on y coordinates
-            //std::cout << "hey sort on y" << std::endl;
             std::sort(pointsList.begin(), pointsList.end(), classCompOnX());
-            //std::cout << "hey sort on y end" << std::endl;
             break;
         // Z separation
         case separationIsOnZ :
             // Sort the points on z coordinates
-            //std::cout << "hey sort on z" << std::endl;
             std::sort(pointsList.begin(), pointsList.end(), classCompOnZ());
-            //std::cout << "hey sort on z end" << std::endl;
             break;
         default :
             std::cerr << "[WARNING]: in kDTree::recursiveInitialization - invalid axis enum" << std::endl;
@@ -171,49 +162,33 @@ kDTree* kDTree::recursiveInitialization(std::vector<Vertex *> pointsList, enum e
     // Separate the vector in twice to get sets of points on each side of the bissectrice
     if(pointsList.size() != 2)
     {
-        //std::cout << "hey firstPart " << std::endl;
         firstPart = std::vector<Vertex*>(pointsList.begin(), pointsList.begin() + (pointsList.size()/2)+1);
-        //std::cout << "hey firstPart end" << std::endl;
-        //std::cout << "hey secondPart " << std::endl;
         secondPart = std::vector<Vertex*>((pointsList.begin() + (pointsList.size()/2))+1, pointsList.end());
-        //std::cout << "hey secondPart end" << std::endl;
     }
     else
     {
-        //std::cout << "hey firstPart " << std::endl;
         firstPart.push_back(pointsList.front());
-        //std::cout << "hey firstPart end" << std::endl;
-        //std::cout << "hey secondPart " << std::endl;
         secondPart.push_back(pointsList.back());
-        //std::cout << "hey secondPart end" << std::endl;
     }
 
 
     // Get bissectrice point
     //bissectricePoint = this->bissectricePoint(firstPart.back(), *secondPart.begin());
-    //std::cout << "hey bissectrice " << firstPart.size() << "/" << secondPart.size() << std::endl;
     bissectricePoint = firstPart.back();
-    //std::cout << "hey bissectrice end" << std::endl;
 
     switch(divisionAxis)
     {
         case separationIsOnX :
-            //std::cout << "hey separationIsOnX " << std::endl;
             fstChild = this->recursiveInitialization(firstPart, separationIsOnY);
             scdChild = this->recursiveInitialization(secondPart, separationIsOnY);
-            //std::cout << "hey separationIsOnX end" << std::endl;
             break;
         case separationIsOnY :
-            //std::cout << "hey separationIsOnY " << std::endl;
             fstChild = this->recursiveInitialization(firstPart, separationIsOnZ);
             scdChild = this->recursiveInitialization(secondPart, separationIsOnZ);
-            //std::cout << "hey separationIsOnY end " << std::endl;
             break;
         case separationIsOnZ :
-            //std::cout << "hey separationIsOnZ " << std::endl;
             fstChild = this->recursiveInitialization(firstPart, separationIsOnX);
             scdChild = this->recursiveInitialization(secondPart, separationIsOnX);
-            //std::cout << "hey separationIsOnZ end " << std::endl;
             break;
         default :
             std::cerr << "[WARNING]: in kDTree::recursiveInitialization - invalid axis enum" << std::endl;
@@ -245,27 +220,19 @@ void kDTree::recursiveSearch_kNearestNeighbors(const Vertex *refPoint, kDTree *n
         return;
     }
 
-    //std::cout << "hey eucl dist " << std::endl;
     distance = this->euclideanDistance(refPoint, node->point);
-    //std::cout << "hey eucl dist end" << std::endl;
 
     if(node->isLeafNode())
     {
-        //std::cout << "hey currentPoint.pt " << std::endl;
         currentPoint.pt =  node->point;
-        //std::cout << "hey currentPoint.pt end" << std::endl;
         currentPoint.distanceFromRefPoint = distance;
 
         if(this->vectorKNN.size() == neighborsNumbers)
         {
             if(distance < this->vectorKNN.back().distanceFromRefPoint)
             {
-                //std::cout << "hey vectorKNN.back() " << std::endl;
                 this->vectorKNN.back() = currentPoint;
-                //std::cout << "hey vectorKNN.back() end" << std::endl;
-                //std::cout << "hey sort " << std::endl;
                 std::sort(this->vectorKNN.begin(), this->vectorKNN.end(), pointComparisonClass());
-                //std::cout << "hey sort end" << std::endl;
             }
         }
         else
@@ -276,7 +243,6 @@ void kDTree::recursiveSearch_kNearestNeighbors(const Vertex *refPoint, kDTree *n
     }
     else if((this->vectorKNN.size() == 0) || (distance <= this->vectorKNN.back().distanceFromRefPoint))
     {
-        //std::cout << "hey else " << node->getSeparationAxis() << std::endl;
         // Choose the first sub-tree to analyze
 
         switch(node->getSeparationAxis())
@@ -331,7 +297,6 @@ void kDTree::init(std::map<int, Vertex *, classComp> points)
     // Points list
     std::vector<Vertex*> pointsList;
 
-    //std::cout << "hey for_each" << std::endl;
     std::for_each(points.begin(), points.end(), [&pointsList](const std::map<int, Vertex *, classComp>::value_type& p) {pointsList.push_back(p.second);});
 
     this->init(pointsList);
@@ -345,32 +310,19 @@ void kDTree::init(std::vector<Vertex*> pointsList)
     std::vector<Vertex*>secondPart;
 
     // Sort the points on x coordinates
-    //std::cout << "hey sort" << std::endl;
     std::sort(pointsList.begin(), pointsList.end(), classCompOnX());
-    //std::cout << "hey sort end" << std::endl;
 
     // Separate the vector in twice to get sets of points on each side of the bissectrice
-    //std::cout << "hey firstPart" << std::endl;
     firstPart = std::vector<Vertex*>(pointsList.begin(), pointsList.begin() + (pointsList.size()/2));
-    //std::cout << "hey firstPart end" << std::endl;
-    //std::cout << "hey secondPart" << std::endl;
     secondPart = std::vector<Vertex*>((pointsList.begin() + (pointsList.size()/2))+1, pointsList.end());
-    //std::cout << "hey secondPart end" << std::endl;
 
     // Get bissectrice point
     this->isLeaf = false;
-    //this->point = this->bissectricePoint(firstPart.back(), *secondPart.begin());
-    //std::cout << "hey firstPart.back" << std::endl;
     this->point = firstPart.back();
-    //std::cout << "hey firstPart.back end" << std::endl;
 
     // Compute children
-    //std::cout << "hey firstPart rec " << separationIsOnY << std::endl;
     this->firstChild = recursiveInitialization(firstPart, separationIsOnY);
-    //std::cout << "hey firstPart rec end" << std::endl;
-    //std::cout << "hey seconPart rec" << std::endl;
     this->secondCHild = recursiveInitialization(secondPart, separationIsOnY);
-    //std::cout << "hey seconPart rec end" << std::endl;
 
     this->separationAxis = separationIsOnX;
     this->firstChild->setFather(this);
