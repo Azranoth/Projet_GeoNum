@@ -45,6 +45,10 @@ void Vertex::display(){
     std::cout << "Vertex " << this->_id << " : Coordinates ( " << this->_x << " , " << this->_y << " , " << this->_z << " )" << std::endl;
 }
 
+void Vertex::resetNbVertices(){
+    Vertex::NB_VERTICES = 0;
+}
+
 double Vertex::barycentricArea(){
     // Process barycenter of every triangle having this point as a vertex
     std::vector<Vertex> listOfBarycentres;

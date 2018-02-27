@@ -40,6 +40,7 @@ public:
 
     // Other functions
     void display();
+    static void resetNbVertices();
     double barycentricArea();
     double voronoiArea();
 
