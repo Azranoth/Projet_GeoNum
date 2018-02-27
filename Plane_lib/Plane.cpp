@@ -92,11 +92,8 @@ void Plane::computeCentroid(std::vector<Vertex *> vertices)
         verticesMatrix(i, 2) = vertices[i]->z();
     }
 
-    std::cout << "enculé" << std::endl;
     center0 = (verticesMatrix.transpose() * verticesMatrix).jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(verticesMatrix.transpose() * weights);
-    std::cout << "enculé end" << std::endl;
 
-    std::cout << "hey " << std::endl;
     this->_center = new Vertex(center0(0), center0(1), center0(2));
     this->_centerIsDefined = true;
 }

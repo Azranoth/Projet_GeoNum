@@ -202,15 +202,6 @@ private:
 
 
     /**
-     * @brief euclideanDistance compute the euclidean distance
-     * @param v1
-     * @param v2
-     * @return
-     */
-    float euclideanDistance(const Vertex* v1, const Vertex* v2) const;
-
-
-    /**
      * @brief recursiveSearch_kNearestNeighbors recursive method to find the k Nearest Neighbors
      * @param node
      * @param neighborsNumbers
@@ -220,6 +211,15 @@ private:
 
 // Methods
 public:
+
+
+    /**
+     * @brief euclideanDistance compute the euclidean distance
+     * @param v1
+     * @param v2
+     * @return
+     */
+    float euclideanDistance(const Vertex* v1, const Vertex* v2) const;
 
 
     /**

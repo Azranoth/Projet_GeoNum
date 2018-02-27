@@ -20,7 +20,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE
                            ${CMAKE_CURRENT_SOURCE_DIR}/kDTree_lib
                            ${CMAKE_CURRENT_SOURCE_DIR}/Plane_lib
                            ${CMAKE_CURRENT_SOURCE_DIR}/PlanesGraph_lib
-                           ${CMAKE_CURRENT_SOURCE_DIR}/VoxelGrid_lib)
+                           ${CMAKE_CURRENT_SOURCE_DIR}/VoxelGrid_lib
+                           ${CMAKE_CURRENT_SOURCE_DIR}/MarchingCubes_lib)
 
 target_link_libraries(${PROJECT_NAME}
                         HalfEdge_structure
@@ -28,8 +29,10 @@ target_link_libraries(${PROJECT_NAME}
                         Plane
                         planesGraph
                         voxelGrid
+                        marchingCubes
                      )
 
+add_subdirectory(MarchingCubes_lib)
 add_subdirectory(PlanesGraph_lib)
 add_subdirectory(Plane_lib)
 add_subdirectory(VoxelGrid_lib)

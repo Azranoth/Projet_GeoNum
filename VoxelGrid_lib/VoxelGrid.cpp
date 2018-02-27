@@ -158,6 +158,12 @@ VoxelGrid::VoxelGrid(std::vector<Plane*> planes, double cubeSize, double density
 }
 
 
+gridCell* VoxelGrid::getFirstCell()
+{
+    return this->firstCell;
+}
+
+
 std::string VoxelGrid::toString()
 {
     int i=0;
