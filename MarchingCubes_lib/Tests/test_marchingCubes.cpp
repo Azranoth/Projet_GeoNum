@@ -2,6 +2,7 @@
 
 int main(int argc, char* argv[]){
 
+    std::cout << "Marching Cubes test" << std::endl;
     double density = 0.3;
     double noise = 0.1;
     double epsilon = -0.1;
@@ -33,9 +34,13 @@ int main(int argc, char* argv[]){
     VoxelGrid* vg_test = new VoxelGrid(planes, cubeSize, density, noise);
 
     MarchingCubes mCubes_test = MarchingCubes(vg_test);
-    mCubes_test.exportToOFFFile("./testMarchingCubes1.off");
+    std::cout << "Importing voxel grid." << std::endl;
+    std::cout << "Starting polygonization using Marching Cubes algorithm..." << std::endl;
     mCubes_test.polygonization();
+    std::cout << "Voxel grid polygonized, new vertices & faces computed." << std::endl;
+    // Second export after polygonization : check new points generated using linear interpolation
     mCubes_test.exportToOFFFile("./testMarchingCubes2.off");
+    std::cout << "New OFF file generated in current directory (/build/MarchingCubes_lib/Tests/)." << std::endl;
 
     return 0;
 }
