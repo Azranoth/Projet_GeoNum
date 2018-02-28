@@ -12,20 +12,14 @@ class VoxelGrid;
 using namespace Eigen;
 
 
-
-struct classCompVertices
-{
-    bool operator() (const int& id1, const int& id2) const
-    { return id1<id2; }
-};
-
 typedef std::array<int,3> Triangle;
+typedef std::array<double,3> CoordsKey;
 
 class MarchingCubes {
 
 protected:
     VoxelGrid* _voxelGrid;
-    std::map<int, Vertex*, classCompVertices> _listOfVertices;
+    std::map<CoordsKey, Vertex*> _listOfVertices;
     std::vector<Triangle> _listOfTriangles;
 
 

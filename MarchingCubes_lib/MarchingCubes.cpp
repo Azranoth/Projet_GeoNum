@@ -3,20 +3,20 @@
 
 MarchingCubes::MarchingCubes(){
     this->_voxelGrid = nullptr;
-    this->_listOfVertices  = std::map<int, Vertex*, classCompVertices>();
+    this->_listOfVertices  = std::map<CoordsKey, Vertex*>();
     this->_listOfTriangles = std::vector<Triangle>();
 }
 
 MarchingCubes::MarchingCubes(VoxelGrid* grid){
     this->_voxelGrid = grid;
-    this->_listOfVertices  = std::map<int, Vertex*, classCompVertices>();
+    this->_listOfVertices  = std::map<CoordsKey, Vertex*>();
     this->_listOfTriangles = std::vector<Triangle>();
 }
 
 void MarchingCubes::clearMapAndVector(){
 
     // ----- Clear the map of vertices
-    std::map<int, Vertex*, classCompVertices>::iterator itV;
+    std::map<CoordsKey, Vertex*>::iterator itV;
     for(itV = this->_listOfVertices.begin(); itV != this->_listOfVertices.end(); itV++){
 
         this->_listOfVertices.erase((*itV).first);
@@ -391,12 +391,15 @@ void MarchingCubes::polygonization(){
 
 
                // Add the new points in the vertices list & the triangles formed by these points in the triangles list
+
                for(int i = 0; triTable[cubeIndex][i] != -1; i+=3){
 
-
-                   this->_listOfVertices.insert( std::make_pair( verticesList[ triTable[cubeIndex][i]   ]->getId(), verticesList[ triTable[cubeIndex][i]   ]) );
-                   this->_listOfVertices.insert( std::make_pair( verticesList[ triTable[cubeIndex][i+1] ]->getId(), verticesList[ triTable[cubeIndex][i+1] ]) );
-                   this->_listOfVertices.insert( std::make_pair( verticesList[ triTable[cubeIndex][i+2] ]->getId(), verticesList[ triTable[cubeIndex][i+2] ]) );
+                   CoordsKey key1 = { verticesList[ triTable[cubeIndex][i  ] ]->x(),  verticesList[ triTable[cubeIndex][i  ] ]->y(),  verticesList[ triTable[cubeIndex][i  ] ]->z() };
+                   this->_listOfVertices.insert( std::make_pair( key1, verticesList[ triTable[cubeIndex][i]   ]) );
+                   CoordsKey key2 = { verticesList[ triTable[cubeIndex][i+1] ]->x(),  verticesList[ triTable[cubeIndex][i+1] ]->y(),  verticesList[ triTable[cubeIndex][i+1] ]->z() };
+                   this->_listOfVertices.insert( std::make_pair( key2, verticesList[ triTable[cubeIndex][i+1] ]) );
+                   CoordsKey key3 = { verticesList[ triTable[cubeIndex][i+2] ]->x(),  verticesList[ triTable[cubeIndex][i+2] ]->y(),  verticesList[ triTable[cubeIndex][i+2] ]->z() };
+                   this->_listOfVertices.insert( std::make_pair( key3, verticesList[ triTable[cubeIndex][i+2] ]) );
 
                    Triangle newTriangle =  { verticesList[ triTable[cubeIndex][i] ]->getId() , verticesList[ triTable[cubeIndex][i+1] ]->getId() , verticesList[ triTable[cubeIndex][i+2] ]->getId() };
                    this->_listOfTriangles.push_back(newTriangle);
@@ -442,7 +445,7 @@ void MarchingCubes::exportToOFFFile(const char *filename){
 
 
     // Write vertices coordinates in it
-    std::map<int, Vertex*>::iterator itV;
+    std::map<CoordsKey, Vertex*>::iterator itV;
     for(itV=this->_listOfVertices.begin(); itV != this->_listOfVertices.end(); itV++){
         fs << (*itV).second->getId() << " " << (*itV).second->x() << " " << (*itV).second->y() << " " << (*itV).second->z() << "\n";
     }
