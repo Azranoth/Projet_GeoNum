@@ -52,50 +52,50 @@ void Plane::normal(Eigen::Vector3d normal0)
 void Plane::computeCentroid(std::vector<Vertex *> vertices, Eigen::VectorXd weights)
 {
 
-    Eigen::VectorXd center0;
+    Eigen::Vector3d temp;
+    Eigen::Vector3d center0;
 
     if(weights.size() != static_cast<unsigned int>(vertices.size()))
     {
         std::cerr << "[WARNING]: in Plane, vertices matrix and weights vector have different size" << std::endl;
     }
 
-     Eigen::MatrixXd verticesMatrix(vertices.size(), 3);
-
      // Create matrix
      for(unsigned int i=0; i<vertices.size(); i++)
      {
-         verticesMatrix(i, 0) = vertices[i]->x();
-         verticesMatrix(i, 1) = vertices[i]->y();
-         verticesMatrix(i, 2) = vertices[i]->z();
+         temp(0) = vertices[i]->x();
+         temp(1) = vertices[i]->y();
+         temp(2) = vertices[i]->z();
+
+         center0 = center0 + (temp * weights(i));
      }
 
-     center0 = verticesMatrix.jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(weights);
-     this->_center = new Vertex(center0(0), center0(1), center0(2));
+     this->_center = new Vertex(center0(0)/vertices.size(), center0(1)/vertices.size(), center0(2)/vertices.size());
      this->_centerIsDefined = true;
 }
 
 
 void Plane::computeCentroid(std::vector<Vertex *> vertices)
 {
-    Eigen::VectorXd center0;
-    Eigen::MatrixXd verticesMatrix(vertices.size(), 3);
-    Eigen::VectorXd weights(vertices.size());
+    Eigen::Vector3d temp = Eigen::Vector3d::Zero();
+    Eigen::Vector3d center0 = Eigen::Vector3d::Zero();
 
+    std::cout << "HEY !" << std::endl;
+     // Create matrix
+     for(unsigned int i=0; i<vertices.size(); i++)
+     {
+         temp(0) = vertices[i]->x();
+         temp(1) = vertices[i]->y();
+         temp(2) = vertices[i]->z();
 
-    // Create matrix
-    for(unsigned int i=0; i<vertices.size(); i++)
-    {
-        weights(i) = 1.0;
+         center0 = center0 + temp;
+     }
+     std::cout << "HEY ! end" << std::endl;
 
-        verticesMatrix(i, 0) = vertices[i]->x();
-        verticesMatrix(i, 1) = vertices[i]->y();
-        verticesMatrix(i, 2) = vertices[i]->z();
-    }
-
-    center0 = (verticesMatrix.transpose() * verticesMatrix).jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(verticesMatrix.transpose() * weights);
-
-    this->_center = new Vertex(center0(0), center0(1), center0(2));
-    this->_centerIsDefined = true;
+     std::cout << "HEY 2 ! " << std::endl;
+     this->_center = new Vertex(center0(0)/vertices.size(), center0(1)/vertices.size(), center0(2)/vertices.size());
+     std::cout << "HEY 2 ! end" << std::endl;
+     this->_centerIsDefined = true;
 }
 
 

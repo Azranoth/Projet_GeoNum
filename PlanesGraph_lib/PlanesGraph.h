@@ -4,6 +4,7 @@
 
 
 #include "Node.h"
+#include "kDTree.h"
 #include "boost/graph/adjacency_list.hpp"
 #include "boost/graph/kruskal_min_spanning_tree.hpp"
 
@@ -26,7 +27,7 @@ public:
     // Constructors
     PlanesGraph();
     PlanesGraph(std::map<int, Node*, classCompNodes> map);
-    PlanesGraph(std::vector<Plane*> planes);
+    PlanesGraph(std::vector<Plane*> planes, int k);
 
     // Getters
 

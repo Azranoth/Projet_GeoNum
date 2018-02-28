@@ -72,9 +72,9 @@ VoxelGrid::VoxelGrid(std::vector<Plane*> planes, double cubeSize, double density
     currentCellY = maxY+this->maxDistanceValue-0.1;
     currentCellZ = minZ-this->maxDistanceValue+0.1;
 
-//    std::cout << "maxX : " << maxX << ", minX : " << minX << ", maxY : " << maxY << ", minY : " << minY << ", maxZ : " << maxZ << " and minZ : " << minZ << std::endl;
-//    std::cout << "cellX : " << currentCellX << ", cellY : " << currentCellY << " and cellZ : " << currentCellZ << std::endl;
-//    std::cout << "cubeSize : " << this->cubeSize << ", " << this->maxDistanceValue << std::endl;
+    std::cout << "maxX : " << maxX << ", minX : " << minX << ", maxY : " << maxY << ", minY : " << minY << ", maxZ : " << maxZ << " and minZ : " << minZ << std::endl;
+    std::cout << "cellX : " << currentCellX << ", cellY : " << currentCellY << " and cellZ : " << currentCellZ << std::endl;
+    std::cout << "cubeSize : " << this->cubeSize << ", " << this->maxDistanceValue << std::endl;
 
     isFirstCellOfPlane = true;
     isFirstCellOfRow = true;
@@ -90,6 +90,7 @@ VoxelGrid::VoxelGrid(std::vector<Plane*> planes, double cubeSize, double density
             // X variation
             while( (currentCellX<maxX) || ( (currentCellZ>=maxX) && (currentCell != nullptr) ) )
             {
+//                std::cout << "cellX : " << currentCellX << ", cellY : " << currentCellY << " and cellZ : " << currentCellZ << std::endl;
 
                 // Create the cell
                 currentCell = newCell(planesTree, planes_map, currentCellX, currentCellY, currentCellZ);

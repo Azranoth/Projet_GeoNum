@@ -11,14 +11,40 @@ PlanesGraph::PlanesGraph(std::map<int, Node*, classCompNodes> map){
     this->_listOfNodes = map;
 }
 
-PlanesGraph::PlanesGraph(std::vector<Plane*> planes){
+PlanesGraph::PlanesGraph(std::vector<Plane*> planes, int k){
 
     this->_listOfNodes = std::map<int, Node*, classCompNodes>();
     std::vector<Plane*>::iterator itP;
+    kDTree planesTree;
+    std::vector<Vertex*> planesCenter;
+    std::vector<Vertex*> nearestNodesVertices;
+    std::map<int, Node*, classCompNodes>::iterator node;
 
-    for(itP = planes.begin(); itP != planes.end(); ++itP){
+    // Retrieve planes center and store planes in a map to speed up plane search
+    for(auto it = planes.begin(); it != planes.end(); ++it)
+    {
+        planesCenter.push_back((*it)->center());
+    }
+
+    planesTree.init(planesCenter);
+
+    // Create nodes
+    for(itP = planes.begin(); itP != planes.end(); ++itP)
+    {
 
         this->_listOfNodes.insert(std::make_pair( (*itP)->center()->getId(), new Node((*itP)->normal(), (*itP)->center() ) ));
+    }
+
+    // Create edges
+    for(auto it = this->_listOfNodes.begin(); it != this->_listOfNodes.end(); ++it)
+    {
+        nearestNodesVertices = planesTree.findKNN(it->second->getCenter(), k);
+
+        for(unsigned int i=0; i<nearestNodesVertices.size(); i++)
+        {
+            node = this->_listOfNodes.find(nearestNodesVertices[i]->getId());
+            it->second->addEdge(node->second);
+        }
     }
 }
 

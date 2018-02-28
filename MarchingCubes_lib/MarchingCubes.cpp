@@ -338,7 +338,6 @@ void MarchingCubes::polygonization(){
     // For each gridCell in the voxelGrid
     while(temp != nullptr){
 
-           std::cout << "coucou" << std::endl;
            cubeIndex = 0;
            if (temp->points[0]->value < 0) cubeIndex |= 1;
            if (temp->points[1]->value < 0) cubeIndex |= 2;
