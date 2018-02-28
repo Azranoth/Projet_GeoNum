@@ -394,14 +394,38 @@ void MarchingCubes::polygonization(){
 
                for(int i = 0; triTable[cubeIndex][i] != -1; i+=3){
 
+                   Triangle newTriangle;
                    CoordsKey key1 = { verticesList[ triTable[cubeIndex][i  ] ]->x(),  verticesList[ triTable[cubeIndex][i  ] ]->y(),  verticesList[ triTable[cubeIndex][i  ] ]->z() };
-                   this->_listOfVertices.insert( std::make_pair( key1, verticesList[ triTable[cubeIndex][i]   ]) );
-                   CoordsKey key2 = { verticesList[ triTable[cubeIndex][i+1] ]->x(),  verticesList[ triTable[cubeIndex][i+1] ]->y(),  verticesList[ triTable[cubeIndex][i+1] ]->z() };
-                   this->_listOfVertices.insert( std::make_pair( key2, verticesList[ triTable[cubeIndex][i+1] ]) );
-                   CoordsKey key3 = { verticesList[ triTable[cubeIndex][i+2] ]->x(),  verticesList[ triTable[cubeIndex][i+2] ]->y(),  verticesList[ triTable[cubeIndex][i+2] ]->z() };
-                   this->_listOfVertices.insert( std::make_pair( key3, verticesList[ triTable[cubeIndex][i+2] ]) );
+                   std::map<CoordsKey,Vertex*>::iterator v = this->_listOfVertices.find( key1 );
+                   if(v == this->_listOfVertices.end() ){
+                       this->_listOfVertices.insert( std::make_pair( key1, verticesList[ triTable[cubeIndex][i  ]   ]) );
+                       newTriangle[0] = (*this->_listOfVertices.find( key1 )).second->getId();
+                   }
+                   else{
+                       newTriangle[0] =(*v).second->getId();
+                   }
 
-                   Triangle newTriangle =  { verticesList[ triTable[cubeIndex][i] ]->getId() , verticesList[ triTable[cubeIndex][i+1] ]->getId() , verticesList[ triTable[cubeIndex][i+2] ]->getId() };
+                   CoordsKey key2 = { verticesList[ triTable[cubeIndex][i+1] ]->x(),  verticesList[ triTable[cubeIndex][i+1] ]->y(),  verticesList[ triTable[cubeIndex][i+1] ]->z() };
+                   v = this->_listOfVertices.find( key2 );
+                   if(v == this->_listOfVertices.end() ){
+                       this->_listOfVertices.insert( std::make_pair( key2, verticesList[ triTable[cubeIndex][i+1]   ]) );
+                       newTriangle[1] = (*this->_listOfVertices.find( key2 )).second->getId();
+                   }
+                   else{
+                       newTriangle[1] =(*v).second->getId();
+                   }
+
+                   CoordsKey key3 = { verticesList[ triTable[cubeIndex][i+2] ]->x(),  verticesList[ triTable[cubeIndex][i+2] ]->y(),  verticesList[ triTable[cubeIndex][i+2] ]->z() };
+                   v = this->_listOfVertices.find( key3 );
+                   if(v == this->_listOfVertices.end() ){
+                       this->_listOfVertices.insert( std::make_pair( key3, verticesList[ triTable[cubeIndex][i+2]   ]) );
+                       newTriangle[2] = (*this->_listOfVertices.find( key3 )).second->getId();
+                   }
+                   else{
+                       newTriangle[2] =(*v).second->getId();
+                   }
+
+
                    this->_listOfTriangles.push_back(newTriangle);
                }
            }
@@ -414,20 +438,51 @@ void MarchingCubes::polygonization(){
 
 Vertex* MarchingCubes::VertexInterp(Vector3d p1, Vector3d p2, double valp1, double valp2){
 
-   if (abs(valp1) < 0.00001)
-      return new Vertex( p1(0), p1(1), p1(2) );
-   if (abs(valp2) < 0.00001)
-      return new Vertex( p2(0), p2(1), p2(2) );
-   if (abs(valp1 - valp2) < 0.00001)
-      return new Vertex( p1(0), p1(1), p1(2) );
+   if (abs(valp1) < 0.00001){
+       CoordsKey coords = { p1(0), p1(1), p1(2) };
+       auto v = this->_listOfVertices.find( coords );
+       if(v != this->_listOfVertices.end() ){
+           return (*v).second;
+       }
+       else{
+           return new Vertex( coords[0], coords[1], coords[2] );
+       }
+   }
+   if (abs(valp2) < 0.00001){
+       CoordsKey coords = { p2(0), p2(1), p2(2) };
+       auto v = this->_listOfVertices.find( coords );
+       if(v != this->_listOfVertices.end() ){
+           return (*v).second;
+       }
+       else{
+           return new Vertex( coords[0], coords[1], coords[2] );
+       }
+   }
+   if (abs(valp1 - valp2) < 0.00001){
+       CoordsKey coords = { p1(0), p1(1), p1(2) };
+       auto v = this->_listOfVertices.find( coords );
+       if(v != this->_listOfVertices.end() ){
+           return (*v).second;
+       }
+       else{
+           return new Vertex( coords[0], coords[1], coords[2] );
+       }
+   }
 
    double mu;
 
    mu = -valp1 / (valp2 - valp1);
 
-   return new Vertex(p1(0) + mu * (p2(0) - p1(0)),
-                     p1(1) + mu * (p2(1) - p1(1)),
-                     p1(2) + mu * (p2(2) - p1(2)));
+   CoordsKey coords =  {p1(0) + mu * (p2(0) - p1(0)),
+                        p1(1) + mu * (p2(1) - p1(1)),
+                        p1(2) + mu * (p2(2) - p1(2))};
+   auto v = this->_listOfVertices.find( coords );
+   if(v != this->_listOfVertices.end() ){
+       return (*v).second;
+   }
+   else{
+       return new Vertex( coords[0], coords[1], coords[2] );
+   }
 }
 
 
