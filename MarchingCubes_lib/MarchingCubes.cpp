@@ -394,6 +394,7 @@ void MarchingCubes::polygonization(){
 
                for(int i = 0; triTable[cubeIndex][i] != -1; i+=3){
 
+                   // ----- Always check if the point already exists in the map to avoid useless vertices creations or misindexation of face's vertices
                    Triangle newTriangle;
                    CoordsKey key1 = { verticesList[ triTable[cubeIndex][i  ] ]->x(),  verticesList[ triTable[cubeIndex][i  ] ]->y(),  verticesList[ triTable[cubeIndex][i  ] ]->z() };
                    std::map<CoordsKey,Vertex*>::iterator v = this->_listOfVertices.find( key1 );
@@ -439,6 +440,7 @@ void MarchingCubes::polygonization(){
 Vertex* MarchingCubes::VertexInterp(Vector3d p1, Vector3d p2, double valp1, double valp2){
 
    if (abs(valp1) < 0.00001){
+       // ----- Always check if the point already exists in the map to avoid useless vertices creations
        CoordsKey coords = { p1(0), p1(1), p1(2) };
        auto v = this->_listOfVertices.find( coords );
        if(v != this->_listOfVertices.end() ){
@@ -449,6 +451,7 @@ Vertex* MarchingCubes::VertexInterp(Vector3d p1, Vector3d p2, double valp1, doub
        }
    }
    if (abs(valp2) < 0.00001){
+       // ----- Always check if the point already exists in the map to avoid useless vertices creations
        CoordsKey coords = { p2(0), p2(1), p2(2) };
        auto v = this->_listOfVertices.find( coords );
        if(v != this->_listOfVertices.end() ){
@@ -459,6 +462,7 @@ Vertex* MarchingCubes::VertexInterp(Vector3d p1, Vector3d p2, double valp1, doub
        }
    }
    if (abs(valp1 - valp2) < 0.00001){
+       // ----- Always check if the point already exists in the map to avoid useless vertices creations
        CoordsKey coords = { p1(0), p1(1), p1(2) };
        auto v = this->_listOfVertices.find( coords );
        if(v != this->_listOfVertices.end() ){
@@ -476,6 +480,7 @@ Vertex* MarchingCubes::VertexInterp(Vector3d p1, Vector3d p2, double valp1, doub
    CoordsKey coords =  {p1(0) + mu * (p2(0) - p1(0)),
                         p1(1) + mu * (p2(1) - p1(1)),
                         p1(2) + mu * (p2(2) - p1(2))};
+   // ----- Always check if the point already exists in the map to avoid useless vertices creations
    auto v = this->_listOfVertices.find( coords );
    if(v != this->_listOfVertices.end() ){
        return (*v).second;
